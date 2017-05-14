@@ -13,6 +13,7 @@
                                                 Woof Woof, Inc.
 
 
+[![Build Status](https://travis-ci.org/woofwoofinc/rktmachine.svg?branch=master)](https://travis-ci.org/woofwoofinc/rktmachine)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://github.com/woofwoofinc/rktmachine#license)
 
 
