@@ -1,0 +1,13 @@
+[rktmachine]
+   name = 'rktmachine'
+   uuid = 'C16CF576-FB07-4DC9-8BF6-C022445B31A8'
+   channel = 'stable'
+   version = 'latest'
+   local = 'true'
+   offline = 'true'
+   cpus = 2
+   memory = '2048'
+   root = 'root.qcow2'
+   volume = 'tools.qcow2'
+   cloud_config = 'user-data'
+   shared-homedir = 'true'

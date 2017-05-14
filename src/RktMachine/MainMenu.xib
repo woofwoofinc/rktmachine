@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="RktMachine" customModuleProvider="target">
+            <connections>
+                <outlet property="statusMenu" destination="czS-Km-Bdb" id="8Tz-9A-4wy"/>
+            </connections>
+        </customObject>
+        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <menu id="czS-Km-Bdb" userLabel="Status Menu">
+            <items>
+                <menuItem title="Corectld: Stopped" tag="1" alternate="YES" id="qTQ-jP-a2i">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="status:" target="Voe-Tx-rLC" id="keW-L7-ybG"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="6MD-ne-tfW"/>
+                <menuItem title="Start" id="Eck-hK-oC8">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="start:" target="Voe-Tx-rLC" id="9qo-dC-oOx"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Stop" id="1lb-ch-eRG">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="stop:" target="Voe-Tx-rLC" id="afl-of-AWg"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Reset" id="2az-yx-tOu">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="reset:" target="Voe-Tx-rLC" id="aCh-MZ-CM8"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="m8B-GY-f3A"/>
+                <menuItem title="SSH" id="04f-jI-W5P">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="ssh:" target="Voe-Tx-rLC" id="hCS-QQ-a6Q"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="kL8-C6-Owi"/>
+                <menuItem title="About RktMachine" tag="6" id="0B9-QX-t5T">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="about:" target="Voe-Tx-rLC" id="KgO-Vx-xhu"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Check for Updates…" id="3i0-AL-uhp">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="checkForUpdates:" target="Voe-Tx-rLC" id="8fP-pz-ALz"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Quit" id="33I-IY-5lK">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="quit:" target="Voe-Tx-rLC" id="IQC-Tc-Uw4"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="0" y="0"/>
+        </menu>
+    </objects>
+</document>
