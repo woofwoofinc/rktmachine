@@ -1,0 +1,75 @@
+#cloud-config
+
+hostname: rktmachine
+
+coreos:
+  update:
+    reboot-strategy: off
+  units:
+    - name: update-engine.service
+      command: stop
+    - name: docker.service
+      command: stop
+    - name: tools.mount
+      command: start
+      content: |
+        [Unit]
+        Description=Mount tools disk image.
+        Requires=initial-setup.service
+        Before=initial-setup.service
+        [Mount]
+        What=/dev/vdb
+        Where=/tools
+        Type=ext4
+    - name: initial-setup.service
+      command: start
+      content: |
+        [Unit]
+        Description=Initial setup for RktMachine.
+        Requires=tools.mount
+        After=tools.mount
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/bin/sh -c '[[ -d /opt/bin ]] || mkdir -p /opt/bin'
+        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild ]] || cp /tools/acbuild /opt/bin/acbuild'
+        ExecStart=/bin/sh -c 'chmod u+s /opt/bin/acbuild'
+        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-chroot ]] || cp /tools/acbuild-chroot  /opt/bin/acbuild-chroot'
+        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-script ]] || cp /tools/acbuild-script /opt/bin/acbuild-script'
+        ExecStart=/bin/sh -c '[[ -d /opt/bin/avahi-daemon ]] || cp /tools/avahi-daemon /opt/bin/avahi-daemon'
+    - name: avahi.service
+      command: start
+      content: |
+        [Unit]
+        Description=Avahi mDNS Service.
+        Requires=initial-setup.service
+        After=initial-setup.service
+        [Service]
+        User=root
+        TimeoutStartSec=0
+        ExecStart=/opt/bin/avahi-daemon -f /etc/avahi-daemon.conf
+        Restart=always
+        RestartSec=10s
+
+write_files:
+  - path: "/etc/avahi-daemon.conf"
+    permissions: "0644"
+    owner: "root"
+    content: |
+      [server]
+      use-ipv4=yes
+      use-ipv6=yes
+      ratelimit-interval-usec=1000000
+      ratelimit-burst=1000
+      [wide-area]
+      enable-wide-area=yes
+      [publish]
+      publish-hinfo=no
+      publish-workstation=no
+      [rlimits]
+      rlimit-core=0
+      rlimit-data=4194304
+      rlimit-fsize=0
+      rlimit-nofile=768
+      rlimit-stack=4194304
+      rlimit-nproc=3
