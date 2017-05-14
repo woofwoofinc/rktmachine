@@ -1,6 +1,9 @@
 # Container image files.
 *.aci
 
+# Xcode
+UserInterfaceState.xcuserstate
+
 # Build artifacts
 *.app
 *.dmg
