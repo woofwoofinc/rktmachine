@@ -2,8 +2,7 @@
 *.aci
 
 # Xcode
-project.xcworkspace
-xcuserdata
+UserInterfaceState.xcuserstate
 
 # Build artifacts
 *.app
