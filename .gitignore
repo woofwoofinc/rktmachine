@@ -1,10 +1,6 @@
 # Container image files.
 *.aci
 
-# Xcode
-project.xcworkspace
-xcuserdata
-
 # Build artifacts
 *.app
 *.dmg
