@@ -33,7 +33,8 @@ acbuild set-name woofwoofinc.dog/jupyter
 acbuild run -- apt-get update -qq
 acbuild run -- apt-get upgrade -qq
 
-acbuild run -- apt-get install -qq wget bzip2
+acbuild run -- apt-get install -qq wget
+acbuild run -- apt-get install -qq bzip2
 
 
 ################################################################################
