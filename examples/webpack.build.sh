@@ -34,40 +34,8 @@ acbuild run -- apt-get update -qq
 acbuild run -- apt-get upgrade -qq
 
 acbuild run -- apt-get install -qq wget
-acbuild run -- apt-get install -qq build-essential gcc
+acbuild run -- apt-get install -qq build-essential
 acbuild run -- apt-get install -qq git
-
-
-################################################################################
-# Sphinx
-################################################################################
-
-# Python pip is in Ubuntu universe.
-acbuild run -- apt-get install -qq software-properties-common
-acbuild run -- apt-add-repository universe
-acbuild run -- apt-get update -qq
-
-acbuild run -- apt-get install -qq python2.7
-acbuild run -- apt-get install -qq python-pip
-acbuild run -- pip install -q --upgrade pip
-
-acbuild run -- pip install -q Sphinx
-acbuild run -- pip install -q sphinx_bootstrap_theme
-
-
-################################################################################
-# Travis
-################################################################################
-
-acbuild run -- apt-get install -qq ruby ruby-dev
-acbuild run -- gem install --no-ri --no-rdoc travis travis-lint
-
-
-################################################################################
-# Image Processing
-################################################################################
-
-acbuild run -- apt-get install -qq imagemagick
 
 
 ################################################################################
@@ -99,13 +67,6 @@ acbuild run -- yarn global add --no-progress webpack-dev-server@2.2.1
 
 
 ################################################################################
-# Firebase Tools
-################################################################################
-
-acbuild run -- npm install -g firebase-tools
-
-
-################################################################################
 # Finalise Image
 ################################################################################
 
@@ -114,7 +75,6 @@ acbuild run -- apt-get -qq autoremove
 acbuild run -- apt-get -qq clean
 
 acbuild port add http tcp 8080
-acbuild port add firebase tcp 5000
 
 acbuild set-exec -- /bin/bash
 acbuild write --overwrite webpack.aci
