@@ -190,7 +190,7 @@ Start by downloading the Avahi source.
 
     wget https://github.com/lathiat/avahi/archive/v0.6.32.tar.gz
     tar xzvf v0.6.32.tar.gz
-    cd avahi-0.6.32
+    pushd avahi-0.6.32 > /dev/null
 
 Use Autoconf/Automake to create a ``./configure`` file.
 
@@ -240,7 +240,7 @@ binary we want is ``avahid`` so copy that to the ``tools`` directory.
 
 ::
 
-    cd ..
+    popd > /dev/null
     cp install/sbin/avahi-daemon tools
 
 Exit the container and unmount the image file.

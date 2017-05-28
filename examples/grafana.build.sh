@@ -77,7 +77,7 @@ wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04.2/release/ubuntu-base-
 ################################################################################
 
 mkdir -p carbon
-cd carbon
+pushd carbon > /dev/null
 
 acbuild begin ../ubuntu-base-16.04-core-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/grafana-carbon
@@ -185,7 +185,7 @@ acbuild end
 
 rkt --insecure-options=image fetch ./grafana-carbon.aci
 
-cd ..
+popd > /dev/null
 
 
 ################################################################################
@@ -193,7 +193,7 @@ cd ..
 ################################################################################
 
 mkdir -p statsd
-cd statsd
+pushd statsd > /dev/null
 
 acbuild begin ../ubuntu-base-16.04-core-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/grafana-statsd
@@ -239,7 +239,7 @@ acbuild end
 
 rkt --insecure-options=image fetch ./grafana-statsd.aci
 
-cd ..
+popd > /dev/null
 
 
 ################################################################################
@@ -247,7 +247,7 @@ cd ..
 ################################################################################
 
 mkdir -p graphite-api
-cd graphite-api
+pushd graphite-api > /dev/null
 
 acbuild begin ../ubuntu-base-16.04-core-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/grafana-graphite-api
@@ -294,7 +294,7 @@ acbuild end
 
 rkt --insecure-options=image fetch ./grafana-graphite-api.aci
 
-cd ..
+popd > /dev/null
 
 
 ################################################################################
@@ -302,7 +302,7 @@ cd ..
 ################################################################################
 
 mkdir -p www
-cd www
+pushd www > /dev/null
 
 acbuild begin ../ubuntu-base-16.04-core-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/grafana-www
@@ -329,12 +329,12 @@ acbuild end
 
 rkt --insecure-options=image fetch ./grafana-www.aci
 
-cd ..
+popd > /dev/null
 
 
 ################################################################################
 # Cleanup
 ################################################################################
 
-cd ..
+popd > /dev/null
 rm -fr grafana

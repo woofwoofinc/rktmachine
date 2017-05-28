@@ -152,7 +152,7 @@ Then change into the new repository and swap to the ``gh-pages`` branch.
 
 ::
 
-    cd rktmachine-gh-pages
+    pushd rktmachine-gh-pages > /dev/null
     git checkout -b gh-pages
 
 Clear out everything in the branch. This uses dot globing and extended glob
@@ -191,5 +191,5 @@ Then clean up the temporary repository.
 
 ::
 
-    cd ..
+    popd > /dev/null
     rm -fr rktmachine-gh-pages

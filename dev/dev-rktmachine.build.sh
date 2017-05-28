@@ -8,7 +8,7 @@ set -x
 ################################################################################
 
 mkdir -p dev-rktmachine
-cd dev-rktmachine
+pushd dev-rktmachine > /dev/null
 
 
 ################################################################################
@@ -95,5 +95,5 @@ rkt --insecure-options=image fetch ./dev-rktmachine.aci
 # Cleanup
 ################################################################################
 
-cd ..
+popd > /dev/null
 rm -fr dev-rktmachine
