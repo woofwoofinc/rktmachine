@@ -99,7 +99,7 @@ Rebuilding ``tools.qcow2``
 The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
-- The `acbuild` binaries for building new container images on the CoreOS VM.
+- The ``acbuild`` binaries for building new container images on the CoreOS VM.
 - A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
   it can be addressed as ``rktmachine.local`` instead of by IP address.
 
@@ -160,6 +160,41 @@ Install the ``acbuild`` binaries by downloading them from the
     sudo tar xzvf acbuild-v0.4.0.tar.gz -C tools --strip-components=1
     sudo chmod u+s tools/acbuild
 
+Alternatively to build the latest ``acbuild`` from master instead, start the
+container as before.
+
+::
+
+    sudo rkt run \
+        --interactive \
+        --volume rktmachine,kind=host,source=$(pwd) \
+        woofwoofinc.dog/dev-rktmachine \
+        --mount volume=rktmachine,target=/rktmachine \
+        --exec /bin/bash
+
+Change to the ``/rktmachine`` directory and get the latest version of the
+``acbuild`` source code:
+
+::
+
+    cd /rktmachine
+    git clone https://github.com/containers/build acbuild
+    cd acbuild
+
+Run the build script:
+
+::
+
+    ./build
+
+Then exit the container and copy the binaries to the ``tools`` directory. Add
+the setuid on the ``acbuild`` binary as before.
+
+::
+
+    sudo cp acbuild/bin/* tools
+    sudo chmod u+s tools/acbuild
+
 Adding Avahi_ is a more difficult process since it is not provided as a
 statically linked binary. Instead we have to get the source and attempt to
 build it so that it can be run on the CoreOS VM. There are a number of warnings
@@ -188,9 +223,9 @@ Start by downloading the Avahi source.
 
 ::
 
-    wget https://github.com/lathiat/avahi/archive/v0.6.32.tar.gz
-    tar xzvf v0.6.32.tar.gz
-    pushd avahi-0.6.32 > /dev/null
+    wget https://github.com/lathiat/avahi/archive/v0.7.tar.gz
+    tar xzvf v0.7.tar.gz
+    pushd avahi-0.7 > /dev/null
 
 Use Autoconf/Automake to create a ``./configure`` file.
 
