@@ -238,18 +238,11 @@ avoid other unavailable shared library issues on the CoreOS VM.
     make binary-local-static BUILDTAGS="containers_image_ostree_stub exclude_graphdriver_devicemapper netgo"
 
 The resulting binary is placed at ``./skopea``. Copy this to the
-``/rktmachine`` directory to make it available on the CoreOS VM.
+``tools`` directory. In this case, setuid is not needed.
 
 ::
 
-    cp skopeo /rktmachine
-
-Then exit the container and copy the binary to the ``tools`` directory. In this
-case, setuid is not needed.
-
-::
-
-    sudo cp skopeo tools
+    cp skopeo /rktmachine/tools
 
 Adding Avahi_ is a more difficult process since it is not provided as a
 statically linked binary and building it statically requires some hacking.
@@ -258,16 +251,9 @@ produced binary appears to work.
 
 .. _Avahi: http://www.avahi.org
 
-Reenter the container and change to the ``/rktmachine`` directory.
+Still in the container, change to the ``/rktmachine`` directory.
 
 ::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
 
     cd /rktmachine
 
@@ -328,7 +314,7 @@ binary we want is ``avahid`` so copy that to the ``tools`` directory.
 ::
 
     popd > /dev/null
-    cp install/sbin/avahi-daemon tools
+    cp install/sbin/avahi-daemon /rktmachine/tools
 
 Exit the container and unmount the image file.
 
@@ -355,6 +341,12 @@ Exit the container and copy the ``tools.qcow2`` image to where it is needed,
 typically to the RktMachine repository under ``src/vm/tools.qcow2``. As before,
 the easiest way to copy the image file to the host machine is to copy it to
 the NFS mounted user directory on the CoreOS VM.
+
+Cleanup the build files on the CoreOS VM.
+
+::
+
+    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install tools tools.raw
 
 
 Rebuilding macOS Corectl Binaries
