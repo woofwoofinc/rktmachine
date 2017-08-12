@@ -15,7 +15,7 @@ pushd dev-rktmachine > /dev/null
 # Download Base Image
 ################################################################################
 
-wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04.2/release/ubuntu-base-16.04-core-amd64.tar.gz
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04.3/release/ubuntu-base-16.04-core-amd64.tar.gz
 
 
 ################################################################################
@@ -60,6 +60,14 @@ acbuild run -- pip install -q sphinx_bootstrap_theme
 
 # QEMU is also in Ubuntu universe.
 acbuild run -- apt-get install -qq qemu
+
+
+################################################################################
+# acbuild Master Build
+################################################################################
+
+acbuild run -- apt-get install -qq git
+acbuild run -- apt-get install -qq golang
 
 
 ################################################################################

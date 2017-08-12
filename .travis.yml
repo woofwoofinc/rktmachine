@@ -4,7 +4,7 @@ xcode_project: RktMachine.xcodeproj
 xcode_scheme: RktMachine
 before_install:
   # Fix for https://github.com/travis-ci/travis-ci/issues/6307
-  - gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  - curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
   - rvm get stable
 script:
   # http://stackoverflow.com/questions/41786984
