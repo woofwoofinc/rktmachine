@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+set -xe
 
 
 ################################################################################
@@ -15,14 +15,14 @@ pushd dev-rktmachine > /dev/null
 # Download Base Image
 ################################################################################
 
-wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04.3/release/ubuntu-base-16.04-core-amd64.tar.gz
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.3-base-amd64.tar.gz
 
 
 ################################################################################
 # Start Image Build
 ################################################################################
 
-acbuild begin ./ubuntu-base-16.04-core-amd64.tar.gz
+acbuild begin ./ubuntu-base-16.04.3-base-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/dev-rktmachine
 
 
@@ -63,11 +63,25 @@ acbuild run -- apt-get install -qq qemu
 
 
 ################################################################################
-# acbuild Master Build
+# Go
 ################################################################################
 
+GO_VERSION=1.8.3
+
 acbuild run -- apt-get install -qq git
-acbuild run -- apt-get install -qq golang
+
+acbuild run -- wget -q https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz
+acbuild run -- tar -xzf go${GO_VERSION}.linux-amd64.tar.gz -C /usr/local
+acbuild run -- rm go${GO_VERSION}.linux-amd64.tar.gz
+
+acbuild run -- ln -s /usr/local/go/bin/go /usr/bin/go
+
+
+################################################################################
+# Skopeo Build
+################################################################################
+
+acbuild run -- apt-get install -qq btrfs-tools libglib2.0-dev libgpgme11-dev
 
 
 ################################################################################
@@ -87,16 +101,9 @@ acbuild run -- apt-get -qq autoremove
 acbuild run -- apt-get -qq clean
 
 acbuild set-exec -- /bin/bash
-acbuild write --overwrite dev-rktmachine.aci
+acbuild write --overwrite ../dev-rktmachine.aci
 
 acbuild end
-
-
-################################################################################
-# Install Image
-################################################################################
-
-rkt --insecure-options=image fetch ./dev-rktmachine.aci
 
 
 ################################################################################

@@ -36,6 +36,7 @@ coreos:
         ExecStart=/bin/sh -c 'chmod u+s /opt/bin/acbuild'
         ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-chroot ]] || cp /tools/acbuild-chroot  /opt/bin/acbuild-chroot'
         ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-script ]] || cp /tools/acbuild-script /opt/bin/acbuild-script'
+        ExecStart=/bin/sh -c '[[ -d /opt/bin/skopeo ]] || cp /tools/skopeo /opt/bin/skopeo'
         ExecStart=/bin/sh -c '[[ -d /opt/bin/avahi-daemon ]] || cp /tools/avahi-daemon /opt/bin/avahi-daemon'
     - name: avahi.service
       command: start
