@@ -32,6 +32,7 @@ To build and install the rkt container:
 ::
 
     ./dev-rktmachine.build.sh
+    rkt --insecure-options=image fetch ./dev-rktmachine.aci
 
 Once the script is finished building and installing the container, you can
 start an interactive session with the current working directory mounted inside
@@ -99,7 +100,8 @@ Rebuilding ``tools.qcow2``
 The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
-- The ``acbuild`` binaries for building new container images on the CoreOS VM.
+- ``acbuild`` binaries for building new container images on the CoreOS VM.
+- ``skopeo`` for working with and converting container images on the CoreOS VM.
 - A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
   it can be addressed as ``rktmachine.local`` instead of by IP address.
 
@@ -195,18 +197,18 @@ the setuid on the ``acbuild`` binary as before.
     sudo cp acbuild/bin/* tools
     sudo chmod u+s tools/acbuild
 
-Adding Avahi_ is a more difficult process since it is not provided as a
-statically linked binary. Instead we have to get the source and attempt to
-build it so that it can be run on the CoreOS VM. There are a number of warnings
-and cautions in the following steps but the produced binary appears to work.
-
-.. _Avahi: http://www.avahi.org
+Adding skopeo_ is more involved since it is not provided as a statically linked
+binary. It is relatively easy to build as a static binary though.
 
 We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
 
 Since CoreOS does not have a build chain, we need to reenter the container and
-build Avahi there. Change to the ``/rktmachine`` directory as before.
+build ``skopeo`` there.
+
+.. _skopeo: https://github.com/projectatomic/skopeo
+
+Reenter the container.
 
 ::
 
@@ -216,6 +218,42 @@ build Avahi there. Change to the ``/rktmachine`` directory as before.
         woofwoofinc.dog/dev-rktmachine \
         --mount volume=rktmachine,target=/rktmachine \
         --exec /bin/bash
+
+Then get the ``skopeo`` sources and create a source tree for Go building.
+
+::
+
+    export GOPATH=~/go
+
+    git clone https://github.com/projectatomic/skopeo $GOPATH/src/github.com/projectatomic/skopeo
+    cd $GOPATH/src/github.com/projectatomic/skopeo
+
+The ``skopeo`` build provides a target for performing a statically linked
+build. We use that together with build tags to exclude shared libraries
+unavailable on CoreOS as well as to build usign a pure Go network library to
+avoid other unavailable shared library issues on the CoreOS VM.
+
+::
+
+    make binary-local-static BUILDTAGS="containers_image_ostree_stub exclude_graphdriver_devicemapper netgo"
+
+The resulting binary is placed at ``./skopea``. Copy this to the
+``tools`` directory. In this case, setuid is not needed.
+
+::
+
+    cp skopeo /rktmachine/tools
+
+Adding Avahi_ is a more difficult process since it is not provided as a
+statically linked binary and building it statically requires some hacking.
+There are a number of warnings and cautions in the following steps but the
+produced binary appears to work.
+
+.. _Avahi: http://www.avahi.org
+
+Still in the container, change to the ``/rktmachine`` directory.
+
+::
 
     cd /rktmachine
 
@@ -276,7 +314,7 @@ binary we want is ``avahid`` so copy that to the ``tools`` directory.
 ::
 
     popd > /dev/null
-    cp install/sbin/avahi-daemon tools
+    cp install/sbin/avahi-daemon /rktmachine/tools
 
 Exit the container and unmount the image file.
 
@@ -298,12 +336,17 @@ format image from the raw image file.
 
     cd /rktmachine
     qemu-img convert -f raw -O qcow2 tools.raw tools.qcow2
-    exit
 
-Copy the ``tools.qcow2`` image to where it is needed, typically to the
-RktMachine repository under ``src/vm/tools.qcow2``. As before, the easiest way
-to copy the image file to the host machine is to copy it to the NFS mounted
-user directory on the CoreOS VM.
+Exit the container and copy the ``tools.qcow2`` image to where it is needed,
+typically to the RktMachine repository under ``src/vm/tools.qcow2``. As before,
+the easiest way to copy the image file to the host machine is to copy it to
+the NFS mounted user directory on the CoreOS VM.
+
+Cleanup the build files on the CoreOS VM.
+
+::
+
+    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install tools tools.raw
 
 
 Rebuilding macOS Corectl Binaries
@@ -359,10 +402,8 @@ Then add the Corectl repository to your Go tree.
 
 ::
 
-    mkdir -p $GOPATH/src/github.com/TheNewNormal
-    cd $GOPATH/src/github.com/TheNewNormal
-    git clone https://github.com/TheNewNormal/corectl
-    cd corectl
+    git clone https://github.com/TheNewNormal/corectl $GOPATH/src/github.com/TheNewNormal/corectl
+    cd $GOPATH/src/github.com/TheNewNormal/corectl
 
 Finally, select the release to build and perform the build.
 

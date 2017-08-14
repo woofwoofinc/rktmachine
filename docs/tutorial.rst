@@ -173,7 +173,7 @@ base image provided by Ubuntu.
 
 ::
 
-    wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04.3/release/ubuntu-base-16.04-core-amd64.tar.gz
+    wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.3-base-amd64.tar.gz
 
 Once this is complete, we begin the container construction by specifying this
 base image and giving the container a name. This is the name which will be used
@@ -184,7 +184,7 @@ the installation of ``acbuild`` on the CoreOS VM is setuid ``root``.)
 
 ::
 
-    acbuild begin ./ubuntu-base-16.04-core-amd64.tar.gz
+    acbuild begin ./ubuntu-base-16.04.3-base-amd64.tar.gz
     acbuild set-name woofwoofinc.dog/jupyter
 
 This creates the basic layout of the container. The ``acbuild`` command has a
