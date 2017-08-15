@@ -7,8 +7,10 @@ set -xe
 # Setup
 ################################################################################
 
-mkdir -p dev-rktmachine
-pushd dev-rktmachine > /dev/null
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+TMP_DIR="$(mktemp -d -p "$DIR" dev-rktmachine.XXXXXX)"
+pushd "$TMP_DIR" > /dev/null
 
 
 ################################################################################
@@ -107,8 +109,8 @@ acbuild end
 
 
 ################################################################################
-# Cleanup
+# Teardown
 ################################################################################
 
 popd > /dev/null
-rm -fr dev-rktmachine
+rm -fr "$TMP_DIR"
