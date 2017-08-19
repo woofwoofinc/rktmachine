@@ -245,11 +245,11 @@ The resulting binary is placed at ``./skopea``. Copy this to the
     cp skopeo /rktmachine/tools
 
 Adding Avahi_ is a more difficult process since it is not provided as a
-statically linked binary and building it statically requires some hacking.
-There are a number of warnings and cautions in the following steps but the
-produced binary appears to work.
+statically linked binary. The libdaemon0_ dependency also needs to be compiled
+with ``-fPIC``.
 
 .. _Avahi: http://www.avahi.org
+.. _libdaemon0: http://0pointer.de/lennart/projects/libdaemon
 
 Still in the container, change to the ``/rktmachine`` directory.
 
@@ -257,15 +257,35 @@ Still in the container, change to the ``/rktmachine`` directory.
 
     cd /rktmachine
 
-Start by downloading the Avahi source.
+First download and extract the ``libdaemon0`` sources.
 
 ::
 
+    wget http://0pointer.de/lennart/projects/libdaemon/libdaemon-0.14.tar.gz
+    tar xzvf libdaemon-0.14.tar.gz
+    cd libdaemon-0.14
+
+Configure to build with ``-fPIC`` and without shared libraries. The ``avahi``
+build prefers the shared libraries so by not building them we force the compile
+to use the static library instead.
+
+::
+
+    ./configure --prefix=/usr --with-pic --disable-shared
+    make clean install
+
+Next download the Avahi source.
+
+::
+
+    cd /rktmachine
+
     wget https://github.com/lathiat/avahi/archive/v0.7.tar.gz
     tar xzvf v0.7.tar.gz
-    pushd avahi-0.7 > /dev/null
+    cd avahi-0.7
 
-Use Autoconf/Automake to create a ``./configure`` file.
+Use Autoconf/Automake to create a ``./configure`` file. There are a number of
+warnings and cautions in the following but the produced binary appears to work.
 
 ::
 
@@ -273,37 +293,28 @@ Use Autoconf/Automake to create a ``./configure`` file.
     autoreconf -i
     automake --add-missing
 
-Now for a ridiculous hack. It is significant effort to make these build files
-link to the static version of ``libdaemon``. Instead, we encourage it strongly
-to do so by deleting the dynamic version of ``libdaemon``. Let's see it link
-dynamically after that.
-
-::
-
-    rm /usr/lib/x86_64-linux-gnu/libdaemon.so
-
 Build ``avahi`` with a set of options that turns nearly everything off.
 
 ::
 
     CONFIGURE_OPT="
-            --prefix=`pwd`/../install
-            --disable-shared
-            --disable-glib --disable-gobject
-            --disable-qt3 --disable-qt4
-            --disable-gtk --disable-gtk3
-            --disable-gdbm
-            --disable-python --disable-pygtk --disable-python-dbus
-            --disable-mono --disable-monodoc
-            --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-html
-            --disable-doxygen-xml
-            --disable-manpages --disable-xmltoman
-            --disable-dbus
-            --with-distro=none
-            --with-avahi-user=root
-            --with-avahi-group=daemon
-            --localstatedir=/var
-            "
+      --prefix=/rktmachine/install
+      --disable-shared
+      --disable-glib --disable-gobject
+      --disable-qt3 --disable-qt4
+      --disable-gtk --disable-gtk3
+      --disable-gdbm
+      --disable-python --disable-pygtk --disable-python-dbus
+      --disable-mono --disable-monodoc
+      --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-html
+      --disable-doxygen-xml
+      --disable-manpages --disable-xmltoman
+      --disable-dbus
+      --with-distro=none
+      --with-avahi-user=root
+      --with-avahi-group=daemon
+      --localstatedir=/var
+    "
 
     ./configure ${CONFIGURE_OPT}
     make clean install
@@ -313,7 +324,7 @@ binary we want is ``avahid`` so copy that to the ``tools`` directory.
 
 ::
 
-    popd > /dev/null
+    cd /rktmachine
     cp install/sbin/avahi-daemon /rktmachine/tools
 
 Exit the container and unmount the image file.
@@ -346,7 +357,8 @@ Cleanup the build files on the CoreOS VM.
 
 ::
 
-    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install tools tools.raw
+    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install libdaemon-0.14  \
+      libdaemon-0.14.tar.gz tools tools.raw
 
 
 Rebuilding macOS Corectl Binaries
