@@ -91,7 +91,6 @@ acbuild run -- apt-get install -qq libexpat1-dev pkg-config shtool
 # Finalise Image
 ################################################################################
 
-acbuild run -- apt-get -qq autoclean
 acbuild run -- apt-get -qq autoremove
 acbuild run -- apt-get -qq clean
 
