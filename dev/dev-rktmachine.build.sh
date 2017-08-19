@@ -17,14 +17,14 @@ pushd "$TMP_DIR" > /dev/null
 # Download Base Image
 ################################################################################
 
-wget http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.3-base-amd64.tar.gz
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.04/release/ubuntu-base-17.04-base-amd64.tar.gz
 
 
 ################################################################################
 # Start Image Build
 ################################################################################
 
-acbuild begin ./ubuntu-base-16.04.3-base-amd64.tar.gz
+acbuild begin ./ubuntu-base-17.04-base-amd64.tar.gz
 acbuild set-name woofwoofinc.dog/dev-rktmachine
 
 
@@ -37,6 +37,7 @@ acbuild run -- apt-get upgrade -qq
 
 acbuild run -- apt-get install -qq wget
 acbuild run -- apt-get install -qq build-essential
+acbuild run -- apt-get install -qq git
 
 
 ################################################################################
@@ -68,15 +69,7 @@ acbuild run -- apt-get install -qq qemu
 # Go
 ################################################################################
 
-GO_VERSION=1.8.3
-
-acbuild run -- apt-get install -qq git
-
-acbuild run -- wget -q https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz
-acbuild run -- tar -xzf go${GO_VERSION}.linux-amd64.tar.gz -C /usr/local
-acbuild run -- rm go${GO_VERSION}.linux-amd64.tar.gz
-
-acbuild run -- ln -s /usr/local/go/bin/go /usr/bin/go
+acbuild run -- apt-get install -qq golang
 
 
 ################################################################################
@@ -91,7 +84,7 @@ acbuild run -- apt-get install -qq btrfs-tools libglib2.0-dev libgpgme11-dev
 ################################################################################
 
 acbuild run -- apt-get install -qq autoconf gettext intltool libtool
-acbuild run -- apt-get install -qq libexpat1-dev libdaemon-dev pkg-config shtool
+acbuild run -- apt-get install -qq libexpat1-dev pkg-config shtool
 
 
 ################################################################################
