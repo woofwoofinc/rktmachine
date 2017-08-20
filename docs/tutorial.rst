@@ -252,7 +252,6 @@ And finally, clean as much off the container image as we can to save space.
 
 ::
 
-    acbuild run -- apt-get -qq autoclean
     acbuild run -- apt-get -qq autoremove
     acbuild run -- apt-get -qq clean
 
