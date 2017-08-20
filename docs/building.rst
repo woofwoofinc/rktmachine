@@ -101,7 +101,9 @@ The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
 - ``acbuild`` binaries for building new container images on the CoreOS VM.
+- OCI image and runtime tools.
 - ``skopeo`` for working with and converting container images on the CoreOS VM.
+- ``docker2aci`` for converting Docker images to ACI format.
 - A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
   it can be addressed as ``rktmachine.local`` instead of by IP address.
 
@@ -163,7 +165,9 @@ Install the ``acbuild`` binaries by downloading them from the
     sudo chmod u+s tools/acbuild
 
 Alternatively to build the latest ``acbuild`` from master instead, start the
-container as before.
+container as before. Since CoreOS does not have a build chain, we need to
+reenter the container and do any compilation there. Output binaries can be
+copied to the CoreOS VM using the volume mount.
 
 ::
 
@@ -197,16 +201,12 @@ the setuid on the ``acbuild`` binary as before.
     sudo cp acbuild/bin/* tools
     sudo chmod u+s tools/acbuild
 
-Adding skopeo_ is more involved since it is not provided as a statically linked
-binary. It is relatively easy to build as a static binary though.
+The docker2aci_ binary is not available as a binary but follows the acbuild
+pattern for building. The output is a static binary so it can used on the
+CoreOS VM without difficulty.
 
 We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
-
-Since CoreOS does not have a build chain, we need to reenter the container and
-build ``skopeo`` there.
-
-.. _skopeo: https://github.com/projectatomic/skopeo
 
 Reenter the container.
 
@@ -219,11 +219,69 @@ Reenter the container.
         --mount volume=rktmachine,target=/rktmachine \
         --exec /bin/bash
 
-Then get the ``skopeo`` sources and create a source tree for Go building.
+Change to the ``/rktmachine`` directory and get the latest version of the
+``docker2aci`` source code:
 
 ::
 
-    export GOPATH=~/go
+    cd /rktmachine
+    git clone git://github.com/appc/docker2aci docker2aci
+    cd docker2aci
+
+Run the build script:
+
+::
+
+    ./build.sh
+
+The resulting binary is placed at ``./bin/docker2aci``. Copy this to the
+``tools`` directory. In this case, setuid is not needed.
+
+::
+
+    cp bin/docker2aci /rktmachine/tools
+
+Similarly, the `oci-image-tool`_ and `oci-runtime-tool`_ are not available as
+binaries but they are also easy to build from source. Again, the build outputs
+static binaries so they can be used on the CoreOS VM without difficulty.
+
+.. _oci-image-tool: https://github.com/opencontainers/image-tools
+.. _oci-runtime-tool: https://github.com/opencontainers/runtime-tools
+
+Get the OCI sources and create a source tree for Go building.
+
+::
+
+    mkdir /rktmachine/go
+    export GOPATH=/rktmachine/go
+
+    go get -d github.com/opencontainers/image-tools/cmd/oci-image-tool
+    go get -d github.com/opencontainers/runtime-tools/cmd/oci-runtime-tool
+
+And build:
+
+::
+
+    cd $GOPATH/src/github.com/opencontainers/image-tools
+    make all
+    BINDIR=/rktmachine/tools make install
+
+    cd $GOPATH/src/github.com/opencontainers/runtime-tools
+    make all
+    BINDIR=/rktmachine/tools make install
+
+The ``BINDIR`` environment setting takes care of installing the binaries into
+the mounted ``tools`` image.
+
+Adding skopeo_ is similar again. Compilation from source is required but in
+this case static binaries are not the default. They are easily specified in the
+build however so it is no difficulty.
+
+.. _skopeo: https://github.com/projectatomic/skopeo
+
+Get the ``skopeo`` sources and create a source tree for Go building.
+
+::
 
     git clone https://github.com/projectatomic/skopeo $GOPATH/src/github.com/projectatomic/skopeo
     cd $GOPATH/src/github.com/projectatomic/skopeo
@@ -237,8 +295,8 @@ avoid other unavailable shared library issues on the CoreOS VM.
 
     make binary-local-static BUILDTAGS="containers_image_ostree_stub exclude_graphdriver_devicemapper netgo"
 
-The resulting binary is placed at ``./skopea``. Copy this to the
-``tools`` directory. In this case, setuid is not needed.
+The resulting binary is placed at ``./skopeo``. Copy this to the ``tools``
+directory. In this case, setuid is not needed.
 
 ::
 
@@ -262,7 +320,7 @@ First download and extract the ``libdaemon0`` sources.
 ::
 
     wget http://0pointer.de/lennart/projects/libdaemon/libdaemon-0.14.tar.gz
-    tar xzvf libdaemon-0.14.tar.gz
+    tar xzf libdaemon-0.14.tar.gz
     cd libdaemon-0.14
 
 Configure to build with ``-fPIC`` and without shared libraries. The ``avahi``
@@ -281,17 +339,15 @@ Next download the Avahi source.
     cd /rktmachine
 
     wget https://github.com/lathiat/avahi/archive/v0.7.tar.gz
-    tar xzvf v0.7.tar.gz
+    tar xzf v0.7.tar.gz
     cd avahi-0.7
 
 Use Autoconf/Automake to create a ``./configure`` file. There are a number of
-warnings and cautions in the following but the produced binary appears to work.
+warnings and cautions in the following but the produced binary works okay.
 
 ::
 
     ./autogen.sh
-    autoreconf -i
-    automake --add-missing
 
 Build ``avahi`` with a set of options that turns nearly everything off.
 
@@ -320,12 +376,12 @@ Build ``avahi`` with a set of options that turns nearly everything off.
     make clean install
 
 All going well, the build artifacts will be in ``/rktmachine/install``. The
-binary we want is ``avahid`` so copy that to the ``tools`` directory.
+only binary we want is ``avahi-daemon`` so copy that to the ``tools``
+directory.
 
 ::
 
-    cd /rktmachine
-    cp install/sbin/avahi-daemon /rktmachine/tools
+    cp /rktmachine/install/sbin/avahi-daemon /rktmachine/tools
 
 Exit the container and unmount the image file.
 
@@ -357,8 +413,8 @@ Cleanup the build files on the CoreOS VM.
 
 ::
 
-    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install libdaemon-0.14  \
-      libdaemon-0.14.tar.gz tools tools.raw
+    sudo rm -fr acbuild avahi-0.7 docker2aci go install libdaemon-0.14 \
+      libdaemon-0.14.tar.gz tools tools.raw v0.7.tar.gz
 
 
 Rebuilding macOS Corectl Binaries
