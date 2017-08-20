@@ -38,7 +38,7 @@ information so we can reference it later.
         -volname "RktMachine" \
         -fs HFS+ -fsargs "-c c=64,a=16,e=16" \
         -format UDRW \
-        -megabytes 128 \
+        -megabytes 64 \
         pack.temp.dmg
 
     device=$(

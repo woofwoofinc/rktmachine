@@ -31,16 +31,9 @@ coreos:
         [Service]
         Type=oneshot
         RemainAfterExit=yes
-        ExecStart=/bin/sh -c '[[ -d /opt/bin ]] || mkdir -p /opt/bin'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild ]] || cp /tools/acbuild /opt/bin/acbuild'
+        ExecStart=/bin/sh -c 'mkdir -p /opt/bin'
+        ExecStart=/bin/sh -c 'tar xzf /tools/tools.tar.gz -C /opt/bin --strip-components=1'
         ExecStart=/bin/sh -c 'chmod u+s /opt/bin/acbuild'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-chroot ]] || cp /tools/acbuild-chroot  /opt/bin/acbuild-chroot'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/acbuild-script ]] || cp /tools/acbuild-script /opt/bin/acbuild-script'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/docker2aci ]] || cp /tools/docker2aci /opt/bin/docker2aci'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/oci-image-tool ]] || cp /tools/oci-image-tool /opt/bin/oci-image-tool'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/oci-runtime-tool ]] || cp /tools/skopeo /opt/bin/oci-runtime-tool'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/skopeo ]] || cp /tools/skopeo /opt/bin/skopeo'
-        ExecStart=/bin/sh -c '[[ -d /opt/bin/avahi-daemon ]] || cp /tools/avahi-daemon /opt/bin/avahi-daemon'
     - name: avahi.service
       command: start
       content: |

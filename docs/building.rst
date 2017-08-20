@@ -107,11 +107,10 @@ too large to be delivered by Cloud Init. Specifically, it contains:
 - A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
   it can be addressed as ``rktmachine.local`` instead of by IP address.
 
-Building this image file is more involved since we need to change from the
-container to the VM a number of times. This is because some operations need to
-be performed on the contents of the filesystem which is easiest to work with
-when mounted to a container. Other operations on the image file itself are more
-convenient from the CoreOS VM with access to the ``tools.qcow2`` file itself.
+The executable files are stored in a gzipped tar for compression. The image
+file itself cannot be compressed since this causes issues booting with
+``corectl``. The uncompression is not a significant problem since it is only
+needed for a one-shot operation on CoreOS VM boot.
 
 As in the previous section, SSH to the CoreOS VM and install the
 ``dev-rktmachine`` container image if not already available. Then start the
@@ -130,28 +129,13 @@ Once in an interactive session on the container, change to the ``/rktmachine``
 directory so output will be on the mounted directory and available to the
 CoreOS VM after the container is stopped.
 
-But this time create a raw image file instead of a qcow2 image file because raw
-images are easier to mount. Later, we will convert the raw image to qcow2
-format when we are finished creating it.
+We want to prepare the ``tools.tar.gz`` file first before handling the image
+creation. Create a directory to group the archive contents.
 
 ::
 
     cd /rktmachine
-    qemu-img create -f raw tools.raw 1G
-
-Now exit the container and format the image file as an ext4 filesystem.
-
-::
-
-    sudo /sbin/mkfs.ext4 -i 8192 -L tools -F tools.raw
-
-Next, mount the ``tools.raw`` image file to the CoreOS VM. This is an easy way
-to also make it available to containers.
-
-::
-
     mkdir tools
-    sudo mount -o loop tools.raw tools
 
 Install the ``acbuild`` binaries by downloading them from the
 `acbuild GitHub repository`_ and copying them to the ``tools`` directory.
@@ -162,44 +146,24 @@ Install the ``acbuild`` binaries by downloading them from the
 
     wget https://github.com/containers/build/releases/download/v0.4.0/acbuild-v0.4.0.tar.gz
     sudo tar xzvf acbuild-v0.4.0.tar.gz -C tools --strip-components=1
-    sudo chmod u+s tools/acbuild
 
-Alternatively to build the latest ``acbuild`` from master instead, start the
-container as before. Since CoreOS does not have a build chain, we need to
-reenter the container and do any compilation there. Output binaries can be
-copied to the CoreOS VM using the volume mount.
+Alternatively we can build the latest ``acbuild`` from master instead. Since
+CoreOS does not have a build chain, any compilation must be done on the
+container.
 
-::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
-
-Change to the ``/rktmachine`` directory and get the latest version of the
-``acbuild`` source code:
+Get the latest version of the ``acbuild`` source code:
 
 ::
 
-    cd /rktmachine
     git clone https://github.com/containers/build acbuild
     cd acbuild
 
-Run the build script:
+Run the build script and copy the binaries to the ``tools`` directory.
 
 ::
 
     ./build
-
-Then exit the container and copy the binaries to the ``tools`` directory. Add
-the setuid on the ``acbuild`` binary as before.
-
-::
-
-    sudo cp acbuild/bin/* tools
-    sudo chmod u+s tools/acbuild
+    cp bin/* /rktmachine/tools
 
 The docker2aci_ binary is not available as a binary but follows the acbuild
 pattern for building. The output is a static binary so it can used on the
@@ -207,17 +171,6 @@ CoreOS VM without difficulty.
 
 We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
-
-Reenter the container.
-
-::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
 
 Change to the ``/rktmachine`` directory and get the latest version of the
 ``docker2aci`` source code:
@@ -228,17 +181,11 @@ Change to the ``/rktmachine`` directory and get the latest version of the
     git clone git://github.com/appc/docker2aci docker2aci
     cd docker2aci
 
-Run the build script:
+Run the build script and copy the binaries to the ``tools`` directory.
 
 ::
 
     ./build.sh
-
-The resulting binary is placed at ``./bin/docker2aci``. Copy this to the
-``tools`` directory. In this case, setuid is not needed.
-
-::
-
     cp bin/docker2aci /rktmachine/tools
 
 Similarly, the `oci-image-tool`_ and `oci-runtime-tool`_ are not available as
@@ -315,7 +262,7 @@ Still in the container, change to the ``/rktmachine`` directory.
 
     cd /rktmachine
 
-First download and extract the ``libdaemon0`` sources.
+Then download and extract the ``libdaemon0`` sources.
 
 ::
 
@@ -383,11 +330,36 @@ directory.
 
     cp /rktmachine/install/sbin/avahi-daemon /rktmachine/tools
 
-Exit the container and unmount the image file.
+Finally build the ``tools.tar.gz`` file.
 
 ::
 
-    sudo umount tools
+    cd /rktmachine
+    GZIP=-9 tar czvf tools.tar.gz tools
+
+Before exiting the container, create a raw image file using QEMU. This is
+instead of a qcow2 image file because raw images are easier to mount. Later,
+we will convert the raw image to qcow2 format when we are finished creating it.
+
+::
+
+    qemu-img create -f raw tools.raw 64M
+
+Exit the container and format the image file as an ext4 filesystem.
+
+::
+
+    sudo /sbin/mkfs.ext4 -i 8192 -L tools -F tools.raw
+
+Next, mount the ``tools.raw`` image file to the CoreOS VM briefly and copy
+``tools.tar.gz`` onto the image.
+
+::
+
+    mkdir tools.mnt
+    sudo mount -o loop tools.raw tools.mnt
+    sudo cp tools.tar.gz tools.mnt
+    sudo umount tools.mnt
 
 Finally restart the container and do the file conversion to create a qcow2
 format image from the raw image file.
@@ -414,7 +386,7 @@ Cleanup the build files on the CoreOS VM.
 ::
 
     sudo rm -fr acbuild avahi-0.7 docker2aci go install libdaemon-0.14 \
-      libdaemon-0.14.tar.gz tools tools.raw v0.7.tar.gz
+      libdaemon-0.14.tar.gz tools tools.mnt tools.raw tools.tar.gz v0.7.tar.gz
 
 
 Rebuilding macOS Corectl Binaries
