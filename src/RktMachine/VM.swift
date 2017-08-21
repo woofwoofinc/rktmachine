@@ -161,7 +161,7 @@ private func ensureEnvironmentInstalled() -> Bool {
 private func ensureCorectldRunning() {
     if !getCorectldIsRunning() {
         // Inform the user about why their password is required.
-        alert(informativeText: "Your password is needed to start the VM.")
+        alert(informativeText: "Your password or TouchID is needed to start the RktMachine VM.")
 
         // Start corectld.
         let launchPath = getResourcesPathFromApp().appendingPathComponent("bin/corectld").path
