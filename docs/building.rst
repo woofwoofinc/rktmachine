@@ -101,15 +101,16 @@ The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
 - ``acbuild`` binaries for building new container images on the CoreOS VM.
+- OCI image and runtime tools.
 - ``skopeo`` for working with and converting container images on the CoreOS VM.
+- ``docker2aci`` for converting Docker images to ACI format.
 - A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
   it can be addressed as ``rktmachine.local`` instead of by IP address.
 
-Building this image file is more involved since we need to change from the
-container to the VM a number of times. This is because some operations need to
-be performed on the contents of the filesystem which is easiest to work with
-when mounted to a container. Other operations on the image file itself are more
-convenient from the CoreOS VM with access to the ``tools.qcow2`` file itself.
+The executable files are stored in a gzipped tar for compression. The image
+file itself cannot be compressed since this causes issues booting with
+``corectl``. The uncompression is not a significant problem since it is only
+needed for a one-shot operation on CoreOS VM boot.
 
 As in the previous section, SSH to the CoreOS VM and install the
 ``dev-rktmachine`` container image if not already available. Then start the
@@ -128,28 +129,13 @@ Once in an interactive session on the container, change to the ``/rktmachine``
 directory so output will be on the mounted directory and available to the
 CoreOS VM after the container is stopped.
 
-But this time create a raw image file instead of a qcow2 image file because raw
-images are easier to mount. Later, we will convert the raw image to qcow2
-format when we are finished creating it.
+We want to prepare the ``tools.tar.gz`` file first before handling the image
+creation. Create a directory to group the archive contents.
 
 ::
 
     cd /rktmachine
-    qemu-img create -f raw tools.raw 1G
-
-Now exit the container and format the image file as an ext4 filesystem.
-
-::
-
-    sudo /sbin/mkfs.ext4 -i 8192 -L tools -F tools.raw
-
-Next, mount the ``tools.raw`` image file to the CoreOS VM. This is an easy way
-to also make it available to containers.
-
-::
-
     mkdir tools
-    sudo mount -o loop tools.raw tools
 
 Install the ``acbuild`` binaries by downloading them from the
 `acbuild GitHub repository`_ and copying them to the ``tools`` directory.
@@ -160,70 +146,89 @@ Install the ``acbuild`` binaries by downloading them from the
 
     wget https://github.com/containers/build/releases/download/v0.4.0/acbuild-v0.4.0.tar.gz
     sudo tar xzvf acbuild-v0.4.0.tar.gz -C tools --strip-components=1
-    sudo chmod u+s tools/acbuild
 
-Alternatively to build the latest ``acbuild`` from master instead, start the
-container as before.
+Alternatively we can build the latest ``acbuild`` from master instead. Since
+CoreOS does not have a build chain, any compilation must be done on the
+container.
 
-::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
-
-Change to the ``/rktmachine`` directory and get the latest version of the
-``acbuild`` source code:
+Get the latest version of the ``acbuild`` source code:
 
 ::
 
-    cd /rktmachine
     git clone https://github.com/containers/build acbuild
     cd acbuild
 
-Run the build script:
+Run the build script and copy the binaries to the ``tools`` directory.
 
 ::
 
     ./build
+    cp bin/* /rktmachine/tools
 
-Then exit the container and copy the binaries to the ``tools`` directory. Add
-the setuid on the ``acbuild`` binary as before.
-
-::
-
-    sudo cp acbuild/bin/* tools
-    sudo chmod u+s tools/acbuild
-
-Adding skopeo_ is more involved since it is not provided as a statically linked
-binary. It is relatively easy to build as a static binary though.
+The docker2aci_ binary is not available as a binary but follows the acbuild
+pattern for building. The output is a static binary so it can used on the
+CoreOS VM without difficulty.
 
 We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
 
-Since CoreOS does not have a build chain, we need to reenter the container and
-build ``skopeo`` there.
+Change to the ``/rktmachine`` directory and get the latest version of the
+``docker2aci`` source code:
+
+::
+
+    cd /rktmachine
+    git clone git://github.com/appc/docker2aci docker2aci
+    cd docker2aci
+
+Run the build script and copy the binaries to the ``tools`` directory.
+
+::
+
+    ./build.sh
+    cp bin/docker2aci /rktmachine/tools
+
+Similarly, the `oci-image-tool`_ and `oci-runtime-tool`_ are not available as
+binaries but they are also easy to build from source. Again, the build outputs
+static binaries so they can be used on the CoreOS VM without difficulty.
+
+.. _oci-image-tool: https://github.com/opencontainers/image-tools
+.. _oci-runtime-tool: https://github.com/opencontainers/runtime-tools
+
+Get the OCI sources and create a source tree for Go building.
+
+::
+
+    mkdir /rktmachine/go
+    export GOPATH=/rktmachine/go
+
+    go get -d github.com/opencontainers/image-tools/cmd/oci-image-tool
+    go get -d github.com/opencontainers/runtime-tools/cmd/oci-runtime-tool
+
+And build:
+
+::
+
+    cd $GOPATH/src/github.com/opencontainers/image-tools
+    make all
+    BINDIR=/rktmachine/tools make install
+
+    cd $GOPATH/src/github.com/opencontainers/runtime-tools
+    make all
+    BINDIR=/rktmachine/tools make install
+
+The ``BINDIR`` environment setting takes care of installing the binaries into
+the mounted ``tools`` image.
+
+Adding skopeo_ is similar again. Compilation from source is required but in
+this case static binaries are not the default. They are easily specified in the
+build however so it is no difficulty.
 
 .. _skopeo: https://github.com/projectatomic/skopeo
 
-Reenter the container.
+Get the ``skopeo`` sources and create a source tree for Go building.
 
 ::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
-
-Then get the ``skopeo`` sources and create a source tree for Go building.
-
-::
-
-    export GOPATH=~/go
 
     git clone https://github.com/projectatomic/skopeo $GOPATH/src/github.com/projectatomic/skopeo
     cd $GOPATH/src/github.com/projectatomic/skopeo
@@ -237,8 +242,8 @@ avoid other unavailable shared library issues on the CoreOS VM.
 
     make binary-local-static BUILDTAGS="containers_image_ostree_stub exclude_graphdriver_devicemapper netgo"
 
-The resulting binary is placed at ``./skopea``. Copy this to the
-``tools`` directory. In this case, setuid is not needed.
+The resulting binary is placed at ``./skopeo``. Copy this to the ``tools``
+directory. In this case, setuid is not needed.
 
 ::
 
@@ -257,12 +262,12 @@ Still in the container, change to the ``/rktmachine`` directory.
 
     cd /rktmachine
 
-First download and extract the ``libdaemon0`` sources.
+Then download and extract the ``libdaemon0`` sources.
 
 ::
 
     wget http://0pointer.de/lennart/projects/libdaemon/libdaemon-0.14.tar.gz
-    tar xzvf libdaemon-0.14.tar.gz
+    tar xzf libdaemon-0.14.tar.gz
     cd libdaemon-0.14
 
 Configure to build with ``-fPIC`` and without shared libraries. The ``avahi``
@@ -281,17 +286,15 @@ Next download the Avahi source.
     cd /rktmachine
 
     wget https://github.com/lathiat/avahi/archive/v0.7.tar.gz
-    tar xzvf v0.7.tar.gz
+    tar xzf v0.7.tar.gz
     cd avahi-0.7
 
 Use Autoconf/Automake to create a ``./configure`` file. There are a number of
-warnings and cautions in the following but the produced binary appears to work.
+warnings and cautions in the following but the produced binary works okay.
 
 ::
 
     ./autogen.sh
-    autoreconf -i
-    automake --add-missing
 
 Build ``avahi`` with a set of options that turns nearly everything off.
 
@@ -320,18 +323,43 @@ Build ``avahi`` with a set of options that turns nearly everything off.
     make clean install
 
 All going well, the build artifacts will be in ``/rktmachine/install``. The
-binary we want is ``avahid`` so copy that to the ``tools`` directory.
+only binary we want is ``avahi-daemon`` so copy that to the ``tools``
+directory.
+
+::
+
+    cp /rktmachine/install/sbin/avahi-daemon /rktmachine/tools
+
+Finally build the ``tools.tar.gz`` file.
 
 ::
 
     cd /rktmachine
-    cp install/sbin/avahi-daemon /rktmachine/tools
+    GZIP=-9 tar czvf tools.tar.gz tools
 
-Exit the container and unmount the image file.
+Before exiting the container, create a raw image file using QEMU. This is
+instead of a qcow2 image file because raw images are easier to mount. Later,
+we will convert the raw image to qcow2 format when we are finished creating it.
 
 ::
 
-    sudo umount tools
+    qemu-img create -f raw tools.raw 64M
+
+Exit the container and format the image file as an ext4 filesystem.
+
+::
+
+    sudo /sbin/mkfs.ext4 -i 8192 -L tools -F tools.raw
+
+Next, mount the ``tools.raw`` image file to the CoreOS VM briefly and copy
+``tools.tar.gz`` onto the image.
+
+::
+
+    mkdir tools.mnt
+    sudo mount -o loop tools.raw tools.mnt
+    sudo cp tools.tar.gz tools.mnt
+    sudo umount tools.mnt
 
 Finally restart the container and do the file conversion to create a qcow2
 format image from the raw image file.
@@ -357,8 +385,8 @@ Cleanup the build files on the CoreOS VM.
 
 ::
 
-    sudo rm -fr acbuild avahi-0.7 v0.7.tar.gz install libdaemon-0.14  \
-      libdaemon-0.14.tar.gz tools tools.raw
+    sudo rm -fr acbuild avahi-0.7 docker2aci go install libdaemon-0.14 \
+      libdaemon-0.14.tar.gz tools tools.mnt tools.raw tools.tar.gz v0.7.tar.gz
 
 
 Rebuilding macOS Corectl Binaries

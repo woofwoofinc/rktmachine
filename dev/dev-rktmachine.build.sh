@@ -69,7 +69,7 @@ acbuild run -- apt-get install -qq qemu
 # Go
 ################################################################################
 
-acbuild run -- apt-get install -qq golang
+acbuild run -- apt-get install -qq golang go-md2man
 
 
 ################################################################################
