@@ -294,7 +294,7 @@ warnings and cautions in the following but the produced binary works okay.
 
 ::
 
-    ./autogen.sh
+    NOCONFIGURE=1 ./autogen.sh
 
 Build ``avahi`` with a set of options that turns nearly everything off.
 
