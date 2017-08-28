@@ -1,24 +1,8 @@
-
-
-
-
-
-
-
-     ______ __    __   _______            __    __
-    |   __ |  |--|  |_|   |   .---.-.----|  |--|__.-----.-----.
-    |      |    <|   _|       |  _  |  __|     |  |     |  -__|
-    |___|__|__|__|____|__|_|__|___._|____|__|__|__|__|__|_____|
-
-                                                Woof Woof, Inc.
-
+# ![RktMachine](https://raw.githubusercontent.com/woofwoofinc/rktmachine/master/docs/assets/title.png)
 
 [![Build Status](https://travis-ci.org/woofwoofinc/rktmachine.svg?branch=master)](https://travis-ci.org/woofwoofinc/rktmachine)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://github.com/woofwoofinc/rktmachine#license)
 
-
-RktMachine
-==========
 RktMachine is a macOS menu bar app providing a CoreOS VM using HyperKit and the
 macOS Hypervisor. It supports developer workflows using the [rkt] container
 system.
