@@ -1,5 +1,5 @@
-RktMachine
-==========
+.. image:: assets/title.png
+
 RktMachine is a macOS menu bar app providing a CoreOS VM using HyperKit and the
 macOS Hypervisor. It supports developer workflows using the rkt_ container
 system.
