@@ -1,0 +1,191 @@
+/*
+ * Fonts
+ *
+ * - Arimo Bold for titles.
+ * - Arimo Regular for body text.
+ * - Anonymous Pro for code.
+ */
+
+@font-face {
+  font-family: "Arimo";
+  src: url("ArimoRegular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Arimo Bold";
+  src: url("ArimoBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Anonymous Pro";
+  src: url("AnonymousProRegular.woff") format("woff");
+}
+
+
+/*
+ * Typography
+ */
+
+h1 {
+  font-family: "Arimo Bold";
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+h2 {
+  font-family: "Arimo Bold";
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+h1 > code {
+  font-family: "Anonymous Pro";
+  font-size: 26px;
+}
+
+h2 > code {
+  font-family: "Anonymous Pro";
+  font-size: 20px;
+}
+
+code, kbd, pre, samp {
+  font-family: "Anonymous Pro";
+  font-size: 12px;
+}
+
+body {
+  font-family: Arimo;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+
+/*
+ * Text Colours
+ */
+
+h1, h2, body {
+  color: #443f3f;
+}
+
+a {
+  /* Links in a brighter red than the brand colour for contrast. */
+  color: #b00000;
+}
+
+code {
+  color: #80081b;
+}
+
+
+/*
+ * Footer
+ */
+
+.footer {
+  margin-top: 18px;
+}
+
+
+/*
+ * Navbar Colours
+ */
+
+.navbar-inverse {
+  background-color: #80081b;
+}
+
+.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-text,
+.navbar-inverse .navbar-nav li a {
+  color: white;
+}
+
+
+/*
+ * Remove Hamburger Button Highlight
+ */
+
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+  background-color: #80081b;
+}
+
+.navbar-toggle {
+  border: 0;
+}
+
+
+/*
+ * Remove Navbar Borders
+ */
+
+.navbar-fixed-top {
+  border-width: 0;
+}
+
+.navbar-collapse,
+.navbar-form {
+  box-shadow: none;
+  border: 0;
+}
+
+
+/*
+ * Dropdown Menu
+ */
+
+.dropdown-menu {
+  font-size: 14px;
+}
+
+.navbar-inverse .navbar-nav .open .dropdown-menu li a,
+.navbar-inverse .navbar-nav .open .dropdown-menu li a code {
+  color: white;
+}
+
+@media (min-width:768px) {
+  /*
+   * The dropdown menu is quite different at the wider breakpoint. It isn't
+   * incorporated as a navbar expand, instead it is a separate menu with a
+   * different colour scheme.
+   */
+
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a,
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a code {
+    color: #443f3f;
+  }
+
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a:hover,
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a:focus,
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a:hover code,
+  .navbar-inverse .navbar-nav .open .dropdown-menu li a:focus code {
+    background-color: #80081b;
+    color: white;
+  }
+}
+
+
+/*
+ * Lists
+ */
+
+ul, ol {
+  margin-bottom: 6px;
+  padding-left: 28px;
+  list-style-type: disclosure-closed;
+}
+
+
+/*
+ * Blockquote Bar
+ */
+
+blockquote {
+  padding: 6px 0 6px 10px;
+  margin: 0 0 8px 20px;
+  font-size: 14px;
+  border-left: 5px solid #80081b;
+}

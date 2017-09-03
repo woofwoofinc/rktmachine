@@ -1,6 +1,6 @@
 import sphinx_bootstrap_theme
 
-needs_sphinx = '1.3'
+needs_sphinx = '1.6.1'
 
 project = u'RktMachine'
 copyright = u'2017, Woof Woof, Inc.'
@@ -22,6 +22,10 @@ extensions = [
     'sphinx.ext.githubpages',
 ]
 
+def setup(app):
+  app.add_stylesheet("woofwoofinc.css")
+
+
 # -- Options for HTML output ----------------------------------------------
 
 html_theme = 'bootstrap'
@@ -34,10 +38,12 @@ html_show_sphinx = False
 html_show_copyright = False
 
 html_theme_options = {
-    'navbar_site_name': "Contents",
+    'navbar_site_name': 'Contents',
     'navbar_pagenav': False,
     'globaltoc_depth': 2,
-    'navbar_class': "navbar navbar-inverse",
-    'navbar_fixed_top': "true",
-    'bootswatch_theme': "simplex",
+    'navbar_class': 'navbar navbar-inverse',
+    'navbar_fixed_top': 'true',
+    'bootswatch_theme': 'simplex',
 }
+
+html_static_path = ['assets']

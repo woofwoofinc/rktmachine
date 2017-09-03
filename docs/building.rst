@@ -169,6 +169,8 @@ The docker2aci_ binary is not available as a binary but follows the acbuild
 pattern for building. The output is a static binary so it can used on the
 CoreOS VM without difficulty.
 
+.. _docker2aci: https://github.com/appc/docker2aci
+
 We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
 
