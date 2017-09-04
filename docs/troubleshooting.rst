@@ -62,13 +62,13 @@ NFS Mount Not Writable
 ~~~~~~~~~~~~~~~~~~~~~~
 The NFS ``/Users`` directory is not writable as the default CoreOS VM user. So
 when SSH-ed onto the CoreOS VM, it is often necessary to copy or move files
-onto the ``/Users`` mount as ``root`` instead. This is because the default user
-on the CoreOS VM has a user id that is unlikely to match the user id of the
-host machine user which is needed for NFS permissions to be satisfied.
+onto the ``/Users`` mount as root instead. This is because the default user on
+the CoreOS VM has a user id that is unlikely to match the user id of the host
+machine user which is needed for NFS permissions to be satisfied.
 
 This is less of an issue when writing to ``/Users`` if it is mounted as a
 volume in a running container. This is because the user under which a container
-is run is typically ``root`` already.
+is run is typically root already.
 
 
 Reclaiming VM Root Disk Image Space

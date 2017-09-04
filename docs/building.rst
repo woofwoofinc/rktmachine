@@ -24,14 +24,14 @@ for building a rkt Ubuntu container with QEMU and other useful development
 tools for RktMachine development.
 
 To build this, start the CoreOS VM from RktMachine and SSH to it. Then copy the
-``dev/dev-rktmachine.build.sh`` script from your ``/Users`` NFS mount to the
+``dev/dev-rktmachine.acbuild.sh`` script from your ``/Users`` NFS mount to the
 CoreOS VM.
 
 To build and install the rkt container:
 
 ::
 
-    ./dev-rktmachine.build.sh
+    ./dev-rktmachine.acbuild.sh
     rkt --insecure-options=image fetch ./dev-rktmachine.aci
 
 Once the script is finished building and installing the container, you can
@@ -81,8 +81,8 @@ Once in an interactive session on the container, change to the ``/rktmachine``
 directory so output will be on the mounted directory and available to the
 CoreOS VM after the container is stopped.
 
-Then run the ``qemu-img`` command to create the qcow2 disk image file. Finally,
-exit the container.
+Then run the qemu-img command to create the qcow2 disk image file. Finally, exit
+the container.
 
 ::
 
@@ -100,17 +100,17 @@ Rebuilding ``tools.qcow2``
 The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
-- ``acbuild`` binaries for building new container images on the CoreOS VM.
+- acbuild binaries for building new container images on the CoreOS VM.
 - OCI image and runtime tools.
-- ``skopeo`` for working with and converting container images on the CoreOS VM.
-- ``docker2aci`` for converting Docker images to ACI format.
-- A statically linked ``avahid`` for broadcasting mDNS from the CoreOS VM so
-  it can be addressed as ``rktmachine.local`` instead of by IP address.
+- skopeo for working with and converting container images on the CoreOS VM.
+- docker2aci for converting Docker images to ACI format.
+- A statically linked avahid for broadcasting mDNS from the CoreOS VM so it can
+  be addressed as ``rktmachine.local`` instead of by IP address.
 
 The executable files are stored in a gzipped tar for compression. The image
-file itself cannot be compressed since this causes issues booting with
-``corectl``. The uncompression is not a significant problem since it is only
-needed for a one-shot operation on CoreOS VM boot.
+file itself cannot be compressed since this causes issues booting with corectl.
+The uncompression is not a significant problem since it is only needed for a
+one-shot operation on CoreOS VM boot.
 
 As in the previous section, SSH to the CoreOS VM and install the
 ``dev-rktmachine`` container image if not already available. Then start the
@@ -137,7 +137,7 @@ creation. Create a directory to group the archive contents.
     cd /rktmachine
     mkdir tools
 
-Install the ``acbuild`` binaries by downloading them from the
+Install the acbuild binaries by downloading them from the
 `acbuild GitHub repository`_ and copying them to the ``tools`` directory.
 
 .. _acbuild GitHub repository: https://github.com/containers/build
@@ -147,11 +147,10 @@ Install the ``acbuild`` binaries by downloading them from the
     wget https://github.com/containers/build/releases/download/v0.4.0/acbuild-v0.4.0.tar.gz
     sudo tar xzvf acbuild-v0.4.0.tar.gz -C tools --strip-components=1
 
-Alternatively we can build the latest ``acbuild`` from master instead. Since
-CoreOS does not have a build chain, any compilation must be done on the
-container.
+Alternatively we can build the latest acbuild from master instead. Since CoreOS
+does not have a build chain, any compilation must be done on the container.
 
-Get the latest version of the ``acbuild`` source code:
+Get the latest version of the acbuild source code:
 
 ::
 
@@ -175,7 +174,7 @@ We need to build statically linked binaries because the bare CoreOS VM that we
 aim to run it on does not have all the necessary dynamic libraries available.
 
 Change to the ``/rktmachine`` directory and get the latest version of the
-``docker2aci`` source code:
+docker2aci source code:
 
 ::
 
@@ -228,17 +227,17 @@ build however so it is no difficulty.
 
 .. _skopeo: https://github.com/projectatomic/skopeo
 
-Get the ``skopeo`` sources and create a source tree for Go building.
+Get the skopeo sources and create a source tree for Go building.
 
 ::
 
     git clone https://github.com/projectatomic/skopeo $GOPATH/src/github.com/projectatomic/skopeo
     cd $GOPATH/src/github.com/projectatomic/skopeo
 
-The ``skopeo`` build provides a target for performing a statically linked
-build. We use that together with build tags to exclude shared libraries
-unavailable on CoreOS as well as to build usign a pure Go network library to
-avoid other unavailable shared library issues on the CoreOS VM.
+The skopeo build provides a target for performing a statically linked build. We
+use that together with build tags to exclude shared libraries unavailable on
+CoreOS as well as to build usign a pure Go network library to avoid other
+unavailable shared library issues on the CoreOS VM.
 
 ::
 
@@ -264,7 +263,7 @@ Still in the container, change to the ``/rktmachine`` directory.
 
     cd /rktmachine
 
-Then download and extract the ``libdaemon0`` sources.
+Then download and extract the libdaemon0 sources.
 
 ::
 
@@ -272,9 +271,9 @@ Then download and extract the ``libdaemon0`` sources.
     tar xzf libdaemon-0.14.tar.gz
     cd libdaemon-0.14
 
-Configure to build with ``-fPIC`` and without shared libraries. The ``avahi``
-build prefers the shared libraries so by not building them we force the compile
-to use the static library instead.
+Configure to build with ``-fPIC`` and without shared libraries. The avahi build
+prefers the shared libraries so by not building them we force the compile to use
+the static library instead.
 
 ::
 
@@ -298,7 +297,7 @@ warnings and cautions in the following but the produced binary works okay.
 
     NOCONFIGURE=1 ./autogen.sh
 
-Build ``avahi`` with a set of options that turns nearly everything off.
+Build avahi with a set of options that turns nearly everything off.
 
 ::
 
@@ -405,9 +404,9 @@ Since the Corectl binaries are run on the host macOS machine, it is more
 convenient to build on macOS rather than attempting to cross compile in the
 development rkt container.
 
-Start by installing the Ocaml and Go compilers as well as the ``libev``
-compilation dependency needed to make the ``qemu-tool`` binary. (This is unused
-in RktMachine but needed for the compile.)
+Start by installing the Ocaml and Go compilers as well as the libev compilation
+dependency needed to make the qemu-tool binary. (This is unused in RktMachine
+but needed for the compile.)
 
 ::
 
