@@ -27,36 +27,36 @@
  */
 
 h1 {
-  font-family: "Arimo Bold";
+  font-family: "Arimo Bold", "Arial Black", "Arial Bold", Gadget, sans-serif;
   font-size: 24px;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 h2 {
-  font-family: "Arimo Bold";
+  font-family: "Arimo Bold", "Arial Black", "Arial Bold", Gadget, sans-serif;
   font-size: 18px;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 h1 > code {
-  font-family: "Anonymous Pro";
+  font-family: "Anonymous Pro", Monaco, Consolas, "Lucida Console", monospace;
   font-size: 26px;
 }
 
 h2 > code {
-  font-family: "Anonymous Pro";
+  font-family: "Anonymous Pro", Monaco, Consolas, "Lucida Console", monospace;
   font-size: 20px;
 }
 
 code, kbd, pre, samp {
-  font-family: "Anonymous Pro";
+  font-family: "Anonymous Pro", Monaco, Consolas, "Lucida Console", monospace;
   font-size: 12px;
 }
 
 body {
-  font-family: Arimo;
+  font-family: Arimo, Arial, "Helvetica Neue", Helvetica, sans-serif;
   font-size: 14px;
   line-height: 1.4;
 }
