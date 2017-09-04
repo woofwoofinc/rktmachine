@@ -185,11 +185,11 @@ In particular, see the `acbuild Getting Started guide`_ and
 .. _acbuild Getting Started guide: https://github.com/containers/build/blob/master/Documentation/getting-started.md
 .. _acbuild subcommand documentation: https://github.com/containers/build/tree/master/Documentation/subcommands
 
-The ``examples`` directory of the `RktMachine repository`_ contains build
-script examples using Ubuntu that illustrate how to use ``acbuild`` to make a
-variety of containers for development use.
+The `Woof Woof, Inc. containers repository`_ contains build script examples
+illustrating how to use acbuild to make a variety of containers for development
+use.
 
-.. _RktMachine repository: https://github.com/woofwoofinc/rktmachine
+.. _Woof Woof, Inc. containers repository: https://github.com/woofwoofinc/containers
 
 .. CAUTION::
    Most services do not default to listening to all network interfaces. Instead
