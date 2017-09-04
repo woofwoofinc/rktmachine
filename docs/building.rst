@@ -24,14 +24,14 @@ for building a rkt Ubuntu container with QEMU and other useful development
 tools for RktMachine development.
 
 To build this, start the CoreOS VM from RktMachine and SSH to it. Then copy the
-``dev/dev-rktmachine.build.sh`` script from your ``/Users`` NFS mount to the
+``dev/dev-rktmachine.acbuild.sh`` script from your ``/Users`` NFS mount to the
 CoreOS VM.
 
 To build and install the rkt container:
 
 ::
 
-    ./dev-rktmachine.build.sh
+    ./dev-rktmachine.acbuild.sh
     rkt --insecure-options=image fetch ./dev-rktmachine.aci
 
 Once the script is finished building and installing the container, you can
