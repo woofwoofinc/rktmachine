@@ -8,7 +8,7 @@ Contributions welcome! Please help us make RktMachine better. The project
 Please note that this project is released with a `Contributor Code of Conduct`_.
 By participating in this project you agree to abide by its terms. Instances of
 abusive, harassing, or otherwise unacceptable behavior may be reported by
-contacting the project team at ``woofwoofinc@gmail.com``.
+contacting the project team at woofwoofinc@gmail.com.
 
 .. _Contributor Code of Conduct: http://contributor-covenant.org/version/1/4/
 

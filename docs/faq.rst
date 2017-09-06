@@ -9,8 +9,8 @@ administration uses. i.e. there is no compiler, ``/usr`` is read-only, common
 dynamic libraries are not installed.
 
 Using a user-focused distribution like Ubuntu for the VM would be more flexible
-in many ways. For instance, ``avahi`` mDNS could be installed using the ``apt``
-package manager instead of by static compilation on a container.
+in many ways. For instance, avahi mDNS could be installed using the apt package
+manager instead of by static compilation on a container.
 
 On the other hand, CoreOS does have advantages as the VM installation. It is
 designed exclusively to serve almost exactly the role of light intermediate

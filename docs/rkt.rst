@@ -193,11 +193,10 @@ variety of containers for development use.
 
 .. CAUTION::
    Most services do not default to listening to all network interfaces. Instead
-   they typically just listed on the local ``localhost`` network. This is a
-   problem when specifying service to run inside a container because the
-   ``localhost`` network on the container will not be available outside of the
-   container. This means we cannot access the container service from our host
-   computer.
+   they typically just listen on the localhost network. This is a problem when
+   specifying service to run inside a container because the localhost network on
+   the container will not be available outside of the container. This means we
+   cannot access the container service from our host computer.
 
    Most services have command line options to change the network interface on
    which the service listens. Usually, it is sufficient to change this to be

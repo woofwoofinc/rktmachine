@@ -58,8 +58,8 @@ Or like the following for password entry.
 Corectl, which stands for CoreOS Control, is the service used by RktMachine to
 create and manage a VM on the macOS hypervisor. Corectl installs CoreOS_ Linux
 on the VM, a distribution usually deployed on cloud infrastructure. This
-distribution is also well suited for running ``rkt`` containers and managing
-network bridging for the RktMachine environment.
+distribution is also well suited for running rkt containers and managing network
+bridging for the RktMachine environment.
 
 .. _CoreOS: https://coreos.com
 
@@ -177,28 +177,27 @@ base image provided by Ubuntu.
 
 Once this is complete, we begin the container construction by specifying this
 base image and giving the container a name. This is the name which will be used
-to list the container in ``rkt``.
+to list the container in rkt.
 
-(Note that superuser privileges are needed to run ``acbuild`` commands and that
-the installation of ``acbuild`` on the CoreOS VM is setuid ``root``.)
+(Note that superuser privileges are needed to run acbuild commands and that the
+installation of acbuild on the CoreOS VM is setuid root.)
 
 ::
 
     acbuild begin ./ubuntu-base-17.04-base-amd64.tar.gz
     acbuild set-name woofwoofinc.dog/jupyter
 
-This creates the basic layout of the container. The ``acbuild`` command has a
-number of subcommands which can be used to add and perform operations on the
-base image. A full list can be seen by running ``acbuild --help``.
+This creates the basic layout of the container. The acbuild command has a number
+of subcommands which can be used to add and perform operations on the base
+image. A full list can be seen by running ``acbuild --help``.
 
 We will be mainly interested in the ``acbuild run`` subcommand. This loads the
 container in its current state and performs a command from within the
-container. We can use this to run ``apt`` and other installation instructions
-on the container itself.
+container. We can use this to run apt and other installation instructions on the
+container itself.
 
 Start by updating the Ubuntu base installation and adding some required
-utilities, ``wget`` and ``bzip2``. These are needed for later steps in the
-installation.
+utilities, wget and bzip2. These are needed for later steps in the installation.
 
 ::
 
@@ -264,7 +263,7 @@ directory build into a file which can be imported into rkt.
     acbuild write --overwrite jupyter.aci
 
 On success there should be a file name ``jupyter.aci`` in the current
-directory. We finish the container build by telling ``acbuild`` to clean up.
+directory. We finish the container build by telling acbuild to clean up.
 
 ::
 
