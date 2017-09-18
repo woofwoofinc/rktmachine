@@ -1,8 +1,8 @@
 Frequently Asked Questions
---------------------------
+==========================
 
 Why CoreOS?
-~~~~~~~~~~~
+-----------
 CoreOS is a minimal Linux distribution solely designed to support containers on
 top of hardware. It is not particularly convenient for development or
 administration uses. i.e. there is no compiler, ``/usr`` is read-only, common

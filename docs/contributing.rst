@@ -1,6 +1,6 @@
 Contributing
-------------
-Contributions welcome! Please help us make RktMachine better. The project
+============
+Contributions welcome! Please help us make this project better. The project
 `GitHub Issues`_ is a great place to start with questions.
 
 .. _GitHub Issues: https://github.com/woofwoofinc/rktmachine/issues

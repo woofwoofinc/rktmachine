@@ -1,8 +1,8 @@
 Releasing
----------
+=========
 
 Release Checklist
-~~~~~~~~~~~~~~~~~
+-----------------
 1. Check version number is correct in ``Info.plist`` and ``docs/conf.py``.
 2. Build release DMG and upload to GitHub releases.
 3. Build documentation and upload to GitHub pages.
@@ -10,7 +10,7 @@ Release Checklist
 
 
 Building a Release DMG
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 Prepare a release by building the distributable DMG disk image archive file to
 contain the RktMachine binary.
 
@@ -102,7 +102,7 @@ The final DMG image is output as ``RktMachine.dmg``.
 
 
 Preparing the GitHub Release
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 Take the SHA256 of the ``RktMachine.dmg`` binary:
 
 ::
@@ -126,8 +126,8 @@ following is a template for the release text.
 
 
 Publishing the Documentation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-RktMachine documentation is published to `woofwoofinc.github.io/rktmachine`_
+----------------------------
+Project documentation is published to `woofwoofinc.github.io/rktmachine`_
 using `GitHub Pages`_.
 
 .. _woofwoofinc.github.io/rktmachine: https://woofwoofinc.github.io/rktmachine
@@ -135,14 +135,13 @@ using `GitHub Pages`_.
 
 First build the documentation as described in :ref:`documentation`.
 
-The GitHub configuration for RktMachine is to serve documentation from the
+The GitHub configuration for this project is to serve documentation from the
 ``gh-pages`` branch. Rather than attempt to build a new ``gh-pages`` in the
-current repository, it is simpler to copy the repository, change to
-``gh-pages`` in the repository copy, and clean everything from there. This has
-the advantage of not operating in the current repository too so it is
-non-destructive.
+current repository, it is simpler to copy the repository, change to ``gh-pages``
+in the repository copy, and clean everything from there. This has the advantage
+of not operating in the current repository too so it is non-destructive.
 
-Create a copy of the RktMachine repository.
+Create a copy of the repository.
 
 ::
 
@@ -167,7 +166,7 @@ options to arrange deletion of everything except the .git directory.
     shopt -u extglob
     shopt -u dotglob
 
-Next, copy in the contents of ``docs/_build/html`` from the main RktMachine
+Next, copy in the contents of ``docs/_build/html`` from the main project
 repository. This is the latest build of the documentation. Dot globing is
 used again since the dot files in the ``docs/_build/html`` directory are also
 needed.

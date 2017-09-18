@@ -1,8 +1,7 @@
 .. _tutorial:
 
 Tutorial
---------
-
+========
 .. NOTE::
    RktMachine needs macOS Yosemite or later to run. This is because Yosemite
    was the first version of macOS with the `native Hypervisor Framework`_ for
@@ -12,7 +11,7 @@ Tutorial
 
 
 Installing RktMachine
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 Begin by downloading the latest version of RktMachine from the
 `RktMachine releases`_ page on GitHub.
 
@@ -37,7 +36,7 @@ RktMachine to your ``Applications`` folder using the provided shortcut.
 
 
 Starting the RktMachine CoreOS VM
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 Open RktMachine from your ``Applications`` folder. On start, RktMachine will
 notify you that it will ask for your user password. This is needed to start the
 Corectl_ daemon service as the superuser.
@@ -119,7 +118,7 @@ Finally our VM is ready to be used.
 
 
 Building a rkt Container
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 Select the SSH option from the RktMachine menu bar app. This will open a new
 terminal window and connect to the RktMachine CoreOS VM.
 
@@ -271,7 +270,7 @@ directory. We finish the container build by telling acbuild to clean up.
 
 
 Installing and Running rkt Containers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------
 Continuing the Jupyter server example, we can import the container into rkt on
 the CoreOS VM by running:
 
@@ -317,7 +316,7 @@ See the section on :ref:`workingwithrkt` for more details on using rkt.
 
 
 Running rkt Containers Interactively
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 It is often useful to run a Bash shell on a container instead of the default
 command. This is particularly the case when we also mount directories from the
 host to the rkt container.

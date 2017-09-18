@@ -1,7 +1,7 @@
 .. _license:
 
 License
--------
+=======
 This work is dual-licensed under the Apache License, Version 2.0 and under the
 MIT Licence.
 

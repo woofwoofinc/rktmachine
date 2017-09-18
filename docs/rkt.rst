@@ -1,7 +1,7 @@
 .. _workingwithrkt:
 
 Working With rkt
-----------------
+================
 The `rkt <https://github.com/rkt/rkt>`_ tool is a command line interface for
 running application containers.
 
@@ -78,8 +78,8 @@ then the running container can be seen using the rkt list command.\
 ::
 
     $ rkt list
-    UUID        APP             IMAGE NAME                      STATE   CREATED     STARTED     NETWORKS
-    c7d3aaca    dev-rktmachine  woofwoofinc.dog/dev-rktmachine  running 6 days ago  6 days ago  default:ip4=172.16.28.2
+    UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
+    c7d3aaca    dev-rktmachine  dev-rktmachine  running 6 days ago  6 days ago  default:ip4=172.16.28.2
 
 Stop a running container using rkt stop.
 
@@ -99,14 +99,13 @@ The container will show as exited in the list now.
 ::
 
     $ rkt list
-    UUID        APP             IMAGE NAME                      STATE   CREATED     STARTED     NETWORKS
-    c7d3aaca    dev-rktmachine  woofwoofinc.dog/dev-rktmachine  exited  6 days ago  6 days ago
+    UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
+    c7d3aaca    dev-rktmachine  dev-rktmachine  exited  6 days ago  6 days ago
 
 Eventually, stopped containers can be removed by running rkt gc. This has a
 grace period of 30 minutes where stopped containers are not removed. The
 garbage collection can be forced by setting the grace period to zero with
 ``--grace-period=0s``.
-
 
 ::
 
@@ -123,7 +122,7 @@ To see which container images are available to run, use rkt image list.
 
     $ rkt image list
     ID                  NAME                                SIZE    IMPORT TIME LAST USED
-    sha512-e1e9e1991658 woofwoofinc.dog/dev-rktmachine      1.8GiB  6 days ago  6 days ago
+    sha512-e1e9e1991658 dev-rktmachine                      1.8GiB  6 days ago  6 days ago
     sha512-fdd18d9c2103 coreos.com/rkt/stage1-coreos:1.21.0 184MiB  6 days ago  6 days ago
 
 It is common to start interactive containers for development workflows and
@@ -137,9 +136,8 @@ An example is:
     $ sudo rkt run \
         --interactive \
         --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
+        dev-rktmachine \
+        --mount volume=rktmachine,target=/rktmachine
 
 In this case, the current working directory is mounted onto the container. This
 is a handy shortcut when already in an NFS mounted directory on the CoreOS VM.
@@ -157,7 +155,7 @@ reinstalled.
 
 ::
 
-    $ rkt image rm woofwoofinc.dog/dev-rktmachine
+    $ rkt image rm dev-rktmachine
     successfully removed aci for image: "sha512-e1e9e1991658e3908f817164f01292ecaf44bed95e25167020c6cbe28d6b863b"
     rm: 1 image(s) successfully removed
 
@@ -170,7 +168,7 @@ using the rkt image gc command instead.
 
 
 Building Containers for rkt
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 The rkt documentation contains a guide on `Building an App Container image`_
 based on using acbuild_.
 
