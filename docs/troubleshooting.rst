@@ -1,8 +1,8 @@
 Troubleshooting
----------------
+===============
 
 CoreOS VM Does Not Boot
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 A failure to boot the CoreOS VM usually appears as a message in the start
 terminal saying the VM IP address cannot be determined.
 
@@ -44,7 +44,7 @@ issues in virtualisation.
 
 
 NFS Mount Unavailable
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 The NFS ``/Users`` directory is loaded late on VM boot. So if you have SSH-ed
 to the instance immediately on boot then the directory may be unavailable until
 the later boot sequence services are started.
@@ -59,7 +59,7 @@ host drive.
 
 
 NFS Mount Not Writable
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 The NFS ``/Users`` directory is not writable as the default CoreOS VM user. So
 when SSH-ed onto the CoreOS VM, it is often necessary to copy or move files
 onto the ``/Users`` mount as root instead. This is because the default user on
@@ -72,7 +72,7 @@ is run is typically root already.
 
 
 Reclaiming VM Root Disk Image Space
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 The underlying ``/`` storage on the CoreOS VM is provided by a QEMU
 Copy-on-write format file in ``~/.rktmachine/root.qcow2``. This is a sparse
 image file with a maximum size of 40Gb.

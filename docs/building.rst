@@ -1,8 +1,8 @@
 Building
---------
+========
 
 XCode
-~~~~~
+-----
 The macOS menu bar application is built using Xcode. To run a development build
 of RktMachine, start by opening the RktMachine project file in Xcode.
 
@@ -15,45 +15,8 @@ Make sure you are not already running RktMachine. Then use the
 run the RktMachine source code.
 
 
-.. _developmentrktcontainer:
-
-Development Tools Container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The RktMachine source comes with a ``dev`` directory which contains a script
-for building a rkt Ubuntu container with QEMU and other useful development
-tools for RktMachine development.
-
-To build this, start the CoreOS VM from RktMachine and SSH to it. Then copy the
-``dev/dev-rktmachine.acbuild.sh`` script from your ``/Users`` NFS mount to the
-CoreOS VM.
-
-To build and install the rkt container:
-
-::
-
-    ./dev-rktmachine.acbuild.sh
-    rkt --insecure-options=image fetch ./dev-rktmachine.aci
-
-Once the script is finished building and installing the container, you can
-start an interactive session with the current working directory mounted inside
-the container at ``/rktmachine`` by running the following.
-
-::
-
-    sudo rkt run \
-        --interactive \
-        --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
-
-The container includes a build chain, Sphinx for compiling this documentation,
-QEMU for working with disk images, and dependencies for building the Avahi mDNS
-tool.
-
-
 Rebuilding ``root.qcow2``
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 The ``root.qcow2`` image file is the base file used in new CoreOS VMs to
 provide persistent storage in the user home directory and elsewhere. Since the
 CoreOS VM initialisation formats the root image if necessary, this image file
@@ -64,18 +27,16 @@ In this section, we detail how to create the ``root.qcow2`` image file to
 include under ``src/vm/root.qcow2`` in case there is a need to rebuild it, e.g.
 to set a new default image size.
 
-As in the previous section, SSH to the CoreOS VM and install the
-``dev-rktmachine`` container image if not already available. Then start the
-container as before.
+SSH to the CoreOS VM and install the ``dev-rktmachine`` container image if not
+already available. (See :ref:`dev`.) Then start the container as before.
 
 ::
 
     sudo rkt run \
         --interactive \
         --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
+        dev-rktmachine \
+        --mount volume=rktmachine,target=/rktmachine
 
 Once in an interactive session on the container, change to the ``/rktmachine``
 directory so output will be on the mounted directory and available to the
@@ -96,7 +57,7 @@ machine is to copy it to the NFS mounted ``/Users`` directory on the CoreOS VM.
 
 
 Rebuilding ``tools.qcow2``
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
@@ -113,17 +74,16 @@ The uncompression is not a significant problem since it is only needed for a
 one-shot operation on CoreOS VM boot.
 
 As in the previous section, SSH to the CoreOS VM and install the
-``dev-rktmachine`` container image if not already available. Then start the
-container as before.
+``dev-rktmachine`` container image if not already available. (See :ref:`dev`.)
+Then start the container as before.
 
 ::
 
     sudo rkt run \
         --interactive \
         --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine \
-        --exec /bin/bash
+        dev-rktmachine \
+        --mount volume=rktmachine,target=/rktmachine
 
 Once in an interactive session on the container, change to the ``/rktmachine``
 directory so output will be on the mounted directory and available to the
@@ -370,7 +330,7 @@ format image from the raw image file.
     sudo rkt run \
         --interactive \
         --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/dev-rktmachine \
+        dev-rktmachine \
         --mount volume=rktmachine,target=/rktmachine \
         --exec /bin/bash
 
@@ -391,7 +351,7 @@ Cleanup the build files on the CoreOS VM.
 
 
 Rebuilding macOS Corectl Binaries
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 The latest versions of the Corectl binaries can be downloaded from the
 `Corectl releases`_ for inclusion in the RktMachine application.
 

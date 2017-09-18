@@ -18,12 +18,13 @@ Using RktMachine
    faq
 
 
-Developing RktMachine
----------------------
+Development
+-----------
 .. toctree::
    :maxdepth: 1
 
    building
+   dev
    documentation
    releasing
 
