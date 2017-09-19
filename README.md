@@ -32,16 +32,16 @@ Detailed documentation is provided in the [docs] directories and at
 [woofwoofinc.github.io/rktmachine]: https://woofwoofinc.github.io/rktmachine
 
 
-Installation
-------------
+Installing
+----------
 To install RktMachine, download a dmg from [releases], open it and copy the
 RktMachine.app binary to your `/Applications` folder.
 
 [releases]: https://github.com/woofwoofinc/rktmachine/releases
 
 
-Using RktMachine
-----------------
+Usage
+-----
 The app will prompt for your user password in order to start the `corectl`
 service as `root`.
 
@@ -60,8 +60,8 @@ See the full tutorial at [woofwoofinc.github.io/rktmachine/tutorial.html].
 [woofwoofinc.github.io/rktmachine/tutorial.html]: https://woofwoofinc.github.io/rktmachine/tutorial.html
 
 
-Developing RktMachine
----------------------
+Developing
+----------
 The RktMachine application is built using Xcode. To run a development build,
 start by opening the RktMachine project file in Xcode.
 

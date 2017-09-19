@@ -23,8 +23,8 @@ Development
 .. toctree::
    :maxdepth: 1
 
-   building
    dev
+   building
    documentation
    releasing
 
