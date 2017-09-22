@@ -73,7 +73,7 @@ The rkt command comes with built in help pages:
           --user-config=                    user configuration directory
 
 If you have followed the :ref:`tutorial` or are already running a rkt container
-then the running container can be seen using the rkt list command.\
+then the running container can be seen using the rkt list command.
 
 ::
 
@@ -143,7 +143,7 @@ In this case, the current working directory is mounted onto the container. This
 is a handy shortcut when already in an NFS mounted directory on the CoreOS VM.
 On the container, this directory is available at ``/rktmachine``.
 
-Use 'exit' to finish the interactive session.
+Use ``exit`` to finish the interactive session.
 
 .. NOTE::
    To exit a non-interactive container or a non-responsive interactive

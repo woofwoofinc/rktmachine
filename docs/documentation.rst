@@ -7,7 +7,7 @@ is placed in ``docs/_build/html``.
 
 .. _Sphinx: http://www.sphinx-doc.org
 
-.. code:: bash
+::
 
     cd docs
     make clean html
