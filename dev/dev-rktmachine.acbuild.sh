@@ -24,8 +24,7 @@ wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.04/release/ubuntu-base-17
 # Start Image Build
 ################################################################################
 
-acbuild begin ./ubuntu-base-17.04-base-amd64.tar.gz
-acbuild set-name woofwoofinc.dog/dev-rktmachine
+acbuild begin --build-mode=oci ./ubuntu-base-17.04-base-amd64.tar.gz
 
 
 ################################################################################
@@ -95,7 +94,7 @@ acbuild run -- apt-get -qq autoremove
 acbuild run -- apt-get -qq clean
 
 acbuild set-exec -- /bin/bash
-acbuild write --overwrite ../dev-rktmachine.aci
+acbuild write --overwrite ../dev-rktmachine.oci
 
 acbuild end
 
