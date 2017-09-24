@@ -38,11 +38,13 @@ additional custom styles.
 .. _Ryan Roemer: https://github.com/ryan-roemer
 .. _Bootswatch: http://bootswatch.com
 
-README badging provided by `Shields.io`_.
+README badging provided by `Travis CI`_ and `Shields.io`_.
 
+.. _Travis CI: https://travis-ci.org
 .. _Shields.io: https://shields.io
 
-Project hosting and issue tracking is from `GitHub`_.
+Continuous integration is by `Travis CI`_. Project hosting and issue tracking is
+from `GitHub`_.
 
 .. _GitHub: https://github.com
 
