@@ -3,8 +3,7 @@
 Development Tools Container
 ===========================
 The project source comes with a ``dev`` directory which contains a script for
-building a rkt Ubuntu container with useful development tools for RktMachine
-development.
+building a rkt Ubuntu container with useful development tools.
 
 To build this, start the CoreOS VM from RktMachine and SSH to it. Then copy the
 ``dev/dev-rktmachine.acbuild.sh`` script from your ``/Users`` NFS mount to the

@@ -72,7 +72,7 @@ run the source code.
 There is lots more documentation about building RktMachine in the [docs]
 directories and at [woofwoofinc.github.io/rktmachine].
 
-If you want to help extend and improve RktMachine, then your contributions
+If you want to help extend and improve this project, then your contributions
 would be greatly appreciated. Check out our [GitHub issues] for ideas or a
 place to ask questions. Welcome to the team!
 
