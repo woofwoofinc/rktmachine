@@ -1,11 +1,10 @@
 language: objective-c
-osx_image: xcode8.3
+osx_image: xcode9
 xcode_project: RktMachine.xcodeproj
 xcode_scheme: RktMachine
-before_install:
+install:
   # Fix for https://github.com/travis-ci/travis-ci/issues/6307
-  - curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
   - rvm get stable
 script:
   # http://stackoverflow.com/questions/41786984
-  - xcodebuild clean build -sdk macosx10.12 -project RktMachine.xcodeproj -scheme RktMachine CODE_SIGNING_REQUIRED=NO
+  - xcodebuild clean build -sdk macosx10.13 -project RktMachine.xcodeproj -scheme RktMachine CODE_SIGNING_REQUIRED=NO

@@ -50,7 +50,7 @@ func notifyIfUpdateAvailable() {
             // Show download prompt dialog.
             let alert: NSAlert = NSAlert()
 
-            alert.alertStyle = NSAlertStyle.warning
+            alert.alertStyle = NSAlert.Style.warning
             alert.messageText = "There is a new version of RktMachine available."
             alert.informativeText = "Open download URL in your browser?"
 
@@ -58,9 +58,9 @@ func notifyIfUpdateAvailable() {
             alert.addButton(withTitle: "Cancel")
 
             DispatchQueue.main.sync {
-                if alert.runModal() == NSAlertFirstButtonReturn {
+                if alert.runModal() == NSApplication.ModalResponse.alertFirstButtonReturn {
                     let url: URL = URL(string: "https://github.com/woofwoofinc/rktmachine/releases")!
-                    NSWorkspace.shared().open(url)
+                    NSWorkspace.shared.open(url)
                 }
             }
         }

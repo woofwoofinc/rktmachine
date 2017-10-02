@@ -32,7 +32,7 @@ class AboutWindowController: NSWindowController {
     }
 
     @IBAction func visitWebsite(_ sender: AnyObject) {
-        NSWorkspace.shared().open(
+        NSWorkspace.shared.open(
             URL(string: "https://github.com/woofwoofinc/rktmachine")!
         )
     }
