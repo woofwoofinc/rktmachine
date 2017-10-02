@@ -127,5 +127,5 @@ func runTerminal(_ launchPath: String) {
         application = "iTerm"
     }
 
-    NSWorkspace.shared().openFile(launchPath, withApplication: application)
+    NSWorkspace.shared.openFile(launchPath, withApplication: application)
 }

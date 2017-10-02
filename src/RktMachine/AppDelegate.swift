@@ -10,7 +10,7 @@ import Cocoa
 import Foundation
 
 
-var statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
+var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -19,12 +19,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var aboutWindowController: AboutWindowController
 
     override init() {
-        self.aboutWindowController = AboutWindowController(windowNibName: "AboutWindow")
+        self.aboutWindowController = AboutWindowController(windowNibName: NSNib.Name(rawValue: "AboutWindow"))
         super.init()
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        let icon = NSImage(named: "StatusItemIcon")
+        let icon = NSImage(named: NSImage.Name(rawValue: "StatusItemIcon"))
         icon?.isTemplate = true
 
         statusItem.menu = statusMenu
@@ -70,8 +70,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         alert.messageText = "Reset RktMachine VM?"
         alert.informativeText = "This will delete any stored data on the VM."
 
-        alert.alertStyle = NSWarningAlertStyle
-        if alert.runModal() == NSAlertFirstButtonReturn {
+        alert.alertStyle = NSAlert.Style.warning
+        if alert.runModal() == NSApplication.ModalResponse.alertFirstButtonReturn {
             ensureVmResetAsync()
         }
     }
@@ -97,7 +97,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         ensureCorectldStopped()
 
-        NSApplication.shared().terminate(self)
+        NSApplication.shared.terminate(self)
     }
 
 
@@ -117,11 +117,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             alert.messageText = "RktMachine cannot be started from DMG."
             alert.informativeText = "Please copy RktMachine to your Applications folder."
 
-            alert.alertStyle = NSWarningAlertStyle
+            alert.alertStyle = NSAlert.Style.warning
             alert.runModal()
 
             // Exit
-            NSApplication.shared().terminate(self)
+            NSApplication.shared.terminate(self)
         }
     }
 }

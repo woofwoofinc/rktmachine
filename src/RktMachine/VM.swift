@@ -206,14 +206,14 @@ func updateStatusAsync() {
     DispatchQueue.global(qos: .userInitiated).async {
         // Default to stopped state unless seen to be otherwise.
         var title = "Corectld: Stopped"
-        var state = NSOffState
+        var state = NSControl.StateValue.off
 
         if getVmIsRunning() {
             title = "VM: Running"
-            state = NSOnState
+            state = NSControl.StateValue.on
         } else if getCorectldIsRunning() {
             title = "VM: Stopped"
-            state = NSOffState
+            state = NSControl.StateValue.off
         }
 
         DispatchQueue.main.async {

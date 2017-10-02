@@ -13,7 +13,7 @@ func alert(_ messageText: String = "RktMachine", informativeText: String) {
     _ = DispatchQueue.main.sync {
         let alert: NSAlert = NSAlert()
 
-        alert.alertStyle = NSAlertStyle.informational
+        alert.alertStyle = NSAlert.Style.informational
         alert.messageText = messageText
         alert.informativeText = informativeText
 
