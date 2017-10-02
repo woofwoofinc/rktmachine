@@ -7,4 +7,4 @@ install:
   - rvm get stable
 script:
   # http://stackoverflow.com/questions/41786984
-  - xcodebuild clean build -sdk macosx10.12 -project RktMachine.xcodeproj -scheme RktMachine CODE_SIGNING_REQUIRED=NO
+  - xcodebuild clean build -sdk macosx10.13 -project RktMachine.xcodeproj -scheme RktMachine CODE_SIGNING_REQUIRED=NO
