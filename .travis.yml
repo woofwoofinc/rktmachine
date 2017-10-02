@@ -2,10 +2,8 @@ language: objective-c
 osx_image: xcode9
 xcode_project: RktMachine.xcodeproj
 xcode_scheme: RktMachine
-before_install:
+install:
   # Fix for https://github.com/travis-ci/travis-ci/issues/6307
-  - brew install gpg2
-  - curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
   - rvm get stable
 script:
   # http://stackoverflow.com/questions/41786984
