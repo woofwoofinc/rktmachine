@@ -17,7 +17,8 @@ contain the RktMachine binary.
 First build an archive in Xcode by selecting ``Product -> Archive``. On success
 this opens a listing of the previously built archives. Select the latest, i.e.
 the one just created, and use the export options from the panel on the right
-hand side to export the archive as a macOS app.
+hand side to export the archive as a macOS app. Use the "Export App" option to
+export without resigning.
 
 This prompts for a location to write the exported macOS app. Change to this
 directory in the terminal once it is complete. There will be a
