@@ -31,6 +31,8 @@ coreos:
         [Service]
         Type=oneshot
         RemainAfterExit=yes
+        ExecStart=/bin/sh -c 'umount /tmp || /bin/true'
+        ExecStart=/bin/sh -c 'chmod 1777 /tmp'
         ExecStart=/bin/sh -c 'mkdir -p /opt/bin'
         ExecStart=/bin/sh -c 'tar xzf /tools/tools.tar.gz -C /opt/bin --strip-components=1'
         ExecStart=/bin/sh -c 'chmod u+s /opt/bin/acbuild'
