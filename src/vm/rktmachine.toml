@@ -2,7 +2,6 @@
    name = 'rktmachine'
    uuid = 'C16CF576-FB07-4DC9-8BF6-C022445B31A8'
    channel = 'stable'
-   version = '1465.6.0'
    local = 'true'
    offline = 'true'
    cpus = 2

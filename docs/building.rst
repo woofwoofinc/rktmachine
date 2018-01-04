@@ -372,6 +372,29 @@ but needed for the compile.)
 
     brew install opam go libev
 
+The compilation will require Ocaml version 4.05.0. Check the Ocaml version by
+running:
+
+::
+
+    $ ocaml -version
+    The OCaml toplevel, version 4.06.0
+
+If you need change the installed version, use the following to unlink the
+installed version and to download and install the 4.05.0 version.
+
+::
+
+    brew unlink ocaml
+    brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/00f632a7990ac314d63f9cdcb831bea7e8371c61/Formula/ocaml.rb
+
+Verify the Ocaml version is correct.
+
+::
+
+    $ ocaml -version
+    The OCaml toplevel, version 4.05.0
+
 Next, clean any previous OPAM installation and set up the Ocaml libraries
 needed.
 
@@ -384,10 +407,31 @@ needed.
 
     rm -fr ~/.opam
     opam init --yes
-    opam install --yes uri qcow-format ocamlfind conf-libev
-    eval `opam config env`
 
-Do the same for Go.
+Create ``~/.ocamlinit`` to avoid compilation problems with topfind.
+
+::
+
+    $ cat > ~/.ocamlinit
+    let () =
+      try Topdirs.dir_directory (Sys.getenv "OCAML_TOPLEVEL_PATH")
+      with Not_found -> ()
+    ;;
+
+Continue the installation:
+
+::
+
+    eval `opam config env`
+    opam install --yes ocamlfind
+    opam install --yes uri
+    opam install --yes conf-libev
+    opam install --yes qcow-format
+    opam install --yes "lwt=3.0.0"
+    opam install --yes "io-page=1.6.1"
+
+Do the same for Go. Clean any previous installation and setup for the corectl
+build.
 
 .. CAUTION::
    The following instructions are unsuitable if you normally do Go
@@ -406,11 +450,14 @@ Then add the Corectl repository to your Go tree.
     git clone https://github.com/TheNewNormal/corectl $GOPATH/src/github.com/TheNewNormal/corectl
     cd $GOPATH/src/github.com/TheNewNormal/corectl
 
-Finally, select the release to build and perform the build.
+Finally, select the release to build and perform the build. The second checkout
+moves to the most recent known good and includes updated CoreOS Linux public
+keys for image signature verification.
 
 ::
 
     git checkout v0.7.18
+    git checkout a180a1bff84da47e5f2babd3d1a912f1ab26743c
 
     make clean
     make tarball
