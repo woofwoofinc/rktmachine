@@ -169,22 +169,16 @@ using the rkt image gc command instead.
 
 Building Containers for rkt
 ---------------------------
-The rkt documentation contains a guide on `Building an App Container image`_
-based on using acbuild_.
+The buildah_ tool from Project Atomic is the recommended software for creating
+OCI format container images. The `buildah documentation`_ contains detailed
+information on using the tool. In particular, see the `buildah tutorials`_.
 
-.. _Building an App Container image: https://coreos.com/rkt/docs/latest/trying-out-rkt.html#building-an-app-container-image
-.. _acbuild: https://github.com/containers/build
-
-The `acbuild documentation`_ contains detailed information on using the tool.
-In particular, see the `acbuild Getting Started guide`_ and
-`acbuild subcommand documentation`_.
-
-.. _acbuild documentation: https://github.com/containers/build/blob/master/README.md
-.. _acbuild Getting Started guide: https://github.com/containers/build/blob/master/Documentation/getting-started.md
-.. _acbuild subcommand documentation: https://github.com/containers/build/tree/master/Documentation/subcommands
+.. _buildah: https://github.com/projectatomic/buildah
+.. _buildah documentation: https://github.com/projectatomic/buildah/tree/master/docs
+.. _buildah tutorials: https://github.com/projectatomic/buildah/blob/master/docs/tutorials/tutorials.md
 
 The `Woof Woof, Inc. containers repository`_ contains build script examples
-illustrating how to use acbuild to make a variety of containers for development
+illustrating how to use buildah to make a variety of containers for development
 use.
 
 .. _Woof Woof, Inc. containers repository: https://github.com/woofwoofinc/containers

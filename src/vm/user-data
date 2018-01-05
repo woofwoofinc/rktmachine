@@ -35,7 +35,9 @@ coreos:
         ExecStart=/bin/sh -c 'chmod 1777 /tmp'
         ExecStart=/bin/sh -c 'mkdir -p /opt/bin'
         ExecStart=/bin/sh -c 'tar xzf /tools/tools.tar.gz -C /opt/bin --strip-components=1'
-        ExecStart=/bin/sh -c 'chmod u+s /opt/bin/acbuild'
+        ExecStart=/bin/sh -c 'mkdir -p /etc/containers'
+        ExecStart=/bin/sh -c 'cp -n /opt/bin/policy.json /etc/containers/'
+        ExecStart=/bin/sh -c 'rm -f /opt/bin/policy.json'
     - name: avahi.service
       command: start
       content: |

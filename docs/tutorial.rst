@@ -154,55 +154,90 @@ iPython Notebook before being extended to other backends.
 
 .. _Jupyter: http://jupyter.org
 
-The acbuild_ command line tool is one of the tools which can used to build
+The buildah_ command line tool is one of the tools which can used to build
 containers for rkt. It comes preinstalled by RktMachine on the CoreOS VM.
 
-.. _acbuild: https://github.com/containers/build
+.. _buildah: https://github.com/projectatomic/buildah
 
-This command uses layout in the current working directory as part of the build,
-so it is sensible to create a directory for each new container build.
+Start the container from scratch.
 
-::
-
-    mkdir -p jupyter
-    cd jupyter
-
-Containers must be created from a base image. For this example, we download a
-base image provided by Ubuntu.
+(Note that superuser privileges are needed to run buildah commands.)
 
 ::
 
-    wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.04/release/ubuntu-base-17.04-base-amd64.tar.gz
+    sudo buildah from scratch --name jupyter
 
-Once this is complete, we begin the container construction by specifying this
-base image and giving the container a name. This is the name which will be used
-to list the container in rkt.
-
-(Note that superuser privileges are needed to run acbuild commands and that the
-installation of acbuild on the CoreOS VM is setuid root.)
+We can verify that buildah has added the container by running:
 
 ::
 
-    acbuild begin ./ubuntu-base-17.04-base-amd64.tar.gz
-    acbuild set-name woofwoofinc.dog/jupyter
+    $ sudo buildah containers
+    CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
+    11596f165083     *                  scratch                          jupyter
 
-This creates the basic layout of the container. The acbuild command has a number
+Note that there is no image yet, we have just created an ad hoc container so
+far. This means that the output from ``buildah images`` won't include this new
+container.
+
+This is an empty container and does not include any content yet. To add a useful
+filesystem, first download a base image provided by Ubuntu.
+
+::
+
+    wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.10/release/ubuntu-base-17.10-base-amd64.tar.gz
+
+To get this onto the container, we mount the container using ``buildah mount``:
+
+::
+
+    $ sudo buildah mount jupyter
+    /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+
+The output is the mount location on the host. Verify that the container is empty
+by checking the mount has no content:
+
+::
+
+    $ sudo ls /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+
+To add the content, untar the Ubuntu base image to this location. The untar has
+to be done as root for permission to write to the mount location.
+
+::
+
+    $ sudo tar xzf ubuntu-base-17.10-base-amd64.tar.gz \
+      -C /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+
+And verify that the container can now usefully run bash:
+
+::
+
+    sudo buildah run jupyter bash
+
+Then umount the container filesystem since we will execute commands on the
+container instead from now.
+
+::
+
+    sudo buildah umount jupyter
+
+This creates the basic layout of the container. The buildah command has a number
 of subcommands which can be used to add and perform operations on the base
-image. A full list can be seen by running ``acbuild --help``.
+image. A full list of which can be seen by running ``buildah --help``.
 
-We will be mainly interested in the ``acbuild run`` subcommand. This loads the
+We will be mainly interested in the ``buildah run`` subcommand. This loads the
 container in its current state and performs a command from within the
-container. We can use this to run apt and other installation instructions on the
-container itself.
+container. We will use this to run apt and other installation instructions on
+the container itself.
 
 Start by updating the Ubuntu base installation and adding some required
 utilities, wget and bzip2. These are needed for later steps in the installation.
 
 ::
 
-    acbuild run -- apt-get update -qq
-    acbuild run -- apt-get upgrade -qq
-    acbuild run -- apt-get install -qq wget bzip2
+    sudo buildah run jupyter -- apt-get update -qq
+    sudo buildah run jupyter -- apt-get upgrade -qq
+    sudo buildah run jupyter -- apt-get install -qq wget bzip2
 
 Next, we perform the Jupyter installation steps. Since we are interested
 mainly in the parts of this to do with creating containers, we'll skip through
@@ -217,12 +252,12 @@ and then using the package manager for that to install the rest of the parts.)
 
 ::
 
-    acbuild run -- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    acbuild run -- bash Miniconda3-latest-Linux-x86_64.sh -b -p /usr -f
-    acbuild run -- rm -fr Miniconda3-latest-Linux-x86_64.sh
-    acbuild run -- conda install -y numpy matplotlib pandas scikit-learn jupyter
-    acbuild run -- conda install -y pytorch torchvision -c soumith
-    acbuild run -- mkdir -p /home/jupyter
+    sudo buildah run jupyter -- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    sudo buildah run jupyter -- bash Miniconda3-latest-Linux-x86_64.sh -b -p /usr -f
+    sudo buildah run jupyter -- rm -fr Miniconda3-latest-Linux-x86_64.sh
+    sudo buildah run jupyter -- conda install -y numpy matplotlib pandas scikit-learn jupyter
+    sudo buildah run jupyter -- conda install -y pytorch torchvision -c soumith
+    sudo buildah run jupyter -- mkdir -p /home/jupyter
 
 To be able to use the Jupyter service from your macOS, you need to make the
 port on which it will run available. This is done by specifying the ports
@@ -236,43 +271,74 @@ means that this port 80 is effectively port 80 on the CoreOS VM too.)
 
 ::
 
-    acbuild port add http tcp 80
+    sudo buildah config jupyter --port 80
 
 Next, set a command for the container to run when it starts. We use a very
-permission/insecure Jupyter run line.
+permissive/insecure Jupyter run line.
 
 ::
 
-    acbuild set-exec -- \
-        jupyter notebook --no-browser --allow-root --ip='*' --port=80 --notebook-dir=/home/jupyter --NotebookApp.token=''
+    sudo buildah config jupyter \
+      --entrypoint "jupyter notebook --no-browser --allow-root --ip='*' --port=80 --notebook-dir=/home/jupyter --NotebookApp.token=''"
 
 And finally, clean as much off the container image as we can to save space.
 
 ::
 
-    acbuild run -- apt-get -qq autoremove
-    acbuild run -- apt-get -qq clean
+    sudo buildah run jupyter -- apt-get -qq autoremove
+    sudo buildah run jupyter -- apt-get -qq clean
 
-Once we are ready, we create the container image file by using
-``acbuild write``. This exports the container layout from the current
-directory build into a file which can be imported into rkt.
-
-::
-
-    acbuild write --overwrite jupyter.aci
-
-On success there should be a file name ``jupyter.aci`` in the current
-directory. We finish the container build by telling acbuild to clean up.
+Once we are ready, we create the container image file by committing the image
+to the container storage first. The ``-rm`` option deletes the build container
+once the image has been created.
 
 ::
 
-    acbuild end
+    sudo buildah commit -rm jupyter jupyter
+
+The committed image should be present in the image listing now.
+
+::
+
+    $ sudo buildah images
+    IMAGE ID      IMAGE NAME                        CREATED AT        SIZE
+    b119130b4473  docker.io/library/jupyter:latest  Jan 2, 2018 22:31 3.79 GB
+
+Export the container layout into OCI format in the local directory by using
+the push subcommand.
+
+::
+
+    $ sudo buildah push jupyter oci:jupyter:latest
+
+OCI format is a tar archive of this. We also need to create the .oci tar file
+without the directory name prefix.
+
+::
+
+    tar cf jupyter.oci -C jupyter .
+
+We finish the container build by removing the image from buildah and deleting
+the intermediate files.
+
+::
+
+    sudo buildah rmi jupyter
+    sudo rm -fr jupyter
 
 
 Installing and Running rkt Containers
 -------------------------------------
-Continuing the Jupyter server example, we can import the container into rkt on
-the CoreOS VM by running:
+Continuing the Jupyter server example, we have to convert the OCI image into an
+ACI before it can be used in rkt on the CoreOS VM. The docker2aci command is
+available for this task.
+
+::
+
+    docker2aci jupyter.oci
+    mv jupyter-latest.aci jupyter.aci
+
+Then import the container into rkt by running:
 
 ::
 
@@ -286,7 +352,7 @@ on the CoreOS VM.
 
     $ rkt image list
     ID                      NAME                                    SIZE    IMPORT TIME     LAST USED
-    sha512-e1e9e1991658     woofwoofinc.dog/jupyter                 3.3GiB  4 minutes ago   4 minutes ago
+    sha512-e1e9e1991658     jupyter                                 3.3GiB  4 minutes ago   4 minutes ago
     sha512-fdd18d9c2103     coreos.com/rkt/stage1-coreos:1.21.0     184MiB  53 minutes ago  53 minutes ago
 
 Start an instance of the container using ``rkt run``. Note that superuser
@@ -294,7 +360,7 @@ privileges are needed.
 
 ::
 
-    sudo rkt run --port=http:80 woofwoofinc.dog/jupyter
+    sudo rkt run --port=80:80 jupyter
 
 This starts the container we built in the previous section and runs the Jupyter
 start command we specified. This makes a Jupyter server available on port 80 of
@@ -345,7 +411,7 @@ For this, we use:
         --interactive \
         --port=http:80 \
         --volume rktmachine,kind=host,source=/Users/docrualaoich/notebooks/ \
-        woofwoofinc.dog/jupyter \
+        jupyter \
         --mount volume=rktmachine,target=/rktmachine \
         --exec /bin/bash
 
@@ -358,7 +424,7 @@ and use ``$(pwd)`` as the volume source.
         --interactive \
         --port=http:80 \
         --volume rktmachine,kind=host,source=$(pwd) \
-        woofwoofinc.dog/jupyter \
+        jupyter \
         --mount volume=rktmachine,target=/rktmachine \
         --exec /bin/bash
 
