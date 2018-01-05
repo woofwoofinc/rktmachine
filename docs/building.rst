@@ -61,7 +61,7 @@ Rebuilding ``tools.qcow2``
 The ``tools.qcow2`` image file contains binaries needed for VM setup which are
 too large to be delivered by Cloud Init. Specifically, it contains:
 
-- acbuild binaries for building new container images on the CoreOS VM.
+- buildah binaries for building new container images on the CoreOS VM.
 - OCI image and runtime tools.
 - skopeo for working with and converting container images on the CoreOS VM.
 - docker2aci for converting Docker images to ACI format.
@@ -97,52 +97,84 @@ creation. Create a directory to group the archive contents.
     cd /rktmachine
     mkdir tools
 
-Install the acbuild binaries by downloading them from the
-`acbuild GitHub repository`_ and copying them to the ``tools`` directory.
+The buildah_ project is not packaged as a binary so we need to build it
+manually. The problem is that CoreOS is a minimal distribution with no support
+for installing dynamically linked library files. So to work on the CoreOS VM we
+need to build binaries which are predominately statically linked, using only
+commonly available dynamic libraries installed on CoreOS already.
 
-.. _acbuild GitHub repository: https://github.com/containers/build
+For the buildah binary, we need some additional dependencies built as static
+libraries. These libraries only need to be installed on the build container.
 
-::
+.. _buildah: https://github.com/projectatomic/buildah
 
-    wget https://github.com/containers/build/releases/download/v0.4.0/acbuild-v0.4.0.tar.gz
-    sudo tar xzvf acbuild-v0.4.0.tar.gz -C tools --strip-components=1
-
-Alternatively we can build the latest acbuild from master instead. Since CoreOS
-does not have a build chain, any compilation must be done on the container.
-
-Get the latest version of the acbuild source code:
+First, libgpgme. Build this as follows:
 
 ::
 
-    git clone https://github.com/containers/build acbuild
-    cd acbuild
+    cd /rktmachine
+    wget https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.10.0.tar.bz2
+    tar xjvf gpgme-1.10.0.tar.bz2
+    cd gpgme-1.10.0
+    ./configure --prefix=/usr --enable-static --disable-shared
+    make install
 
-Run the build script and copy the binaries to the ``tools`` directory.
+And for a static libdevmapper, use:
 
 ::
 
-    ./build
-    cp bin/* /rktmachine/tools
+    cd /rktmachine
+    git clone git://sourceware.org/git/lvm2.git
+    cd lvm2
+    ./configure --prefix=/usr --enable-static_link --enable-pkgconfig
+    make device-mapper
+    make install_device-mapper
 
-The docker2aci_ binary is not available as a binary but follows the acbuild
-pattern for building. The output is a static binary so it can used on the
-CoreOS VM without difficulty.
+Now, start on the buildah compilation by getting the latest buildah sources and
+creating a source tree for Go building.
+
+::
+
+    mkdir /rktmachine/go
+    export GOPATH=/rktmachine/go
+
+    go get -d github.com/projectatomic/buildah
+
+And build using:
+
+::
+
+    cd $GOPATH/src/github.com/projectatomic/buildah
+    make buildah TAGS="apparmor seccomp"
+    install -D -m0755 buildah /rktmachine/tools/buildah
+
+The docker2aci_ binary is similarly not available as a binary. The build output
+is already a static binary so it can used on the CoreOS VM without difficulty.
 
 .. _docker2aci: https://github.com/appc/docker2aci
 
-We need to build statically linked binaries because the bare CoreOS VM that we
-aim to run it on does not have all the necessary dynamic libraries available.
+In the case of docker2aci the main issue is that the latest version in master
+only supports OCI containers which conform to the v1.0.0-rc2 version of the
+OCI container specification. The problem here is that buildah produces OCI
+containers which match version v1.0.0-rc5 which is incompatible with
+v1.0.0.0-rc2.
 
-Change to the ``/rktmachine`` directory and get the latest version of the
+In order to get a useful docker2aci, we instead use a fork which has updated the
+supported OCI container version to one that works with OCI containers produced
+by buildah. This fork is maintained at `woofwoofinc/docker2aci`_.
+
+.. _woofwoofinc/docker2aci: https://github.com/woofwoofinc/docker2aci
+
+Change to the ``/rktmachine`` directory and get the forked version of the
 docker2aci source code:
 
 ::
 
     cd /rktmachine
-    git clone git://github.com/appc/docker2aci docker2aci
+    git clone git://github.com/woofwoofinc/docker2aci docker2aci
     cd docker2aci
 
-Run the build script and copy the binaries to the ``tools`` directory.
+Run the build script and copy the binary output to the ``tools`` directory.
 
 ::
 
@@ -159,9 +191,6 @@ static binaries so they can be used on the CoreOS VM without difficulty.
 Get the OCI sources and create a source tree for Go building.
 
 ::
-
-    mkdir /rktmachine/go
-    export GOPATH=/rktmachine/go
 
     go get -d github.com/opencontainers/image-tools/cmd/oci-image-tool
     go get -d github.com/opencontainers/runtime-tools/cmd/oci-runtime-tool
@@ -191,28 +220,26 @@ Get the skopeo sources and create a source tree for Go building.
 
 ::
 
-    git clone https://github.com/projectatomic/skopeo $GOPATH/src/github.com/projectatomic/skopeo
+    go get -d github.com/projectatomic/skopeo/cmd/skopeo
     cd $GOPATH/src/github.com/projectatomic/skopeo
 
 The skopeo build provides a target for performing a statically linked build. We
 use that together with build tags to exclude shared libraries unavailable on
-CoreOS as well as to build usign a pure Go network library to avoid other
-unavailable shared library issues on the CoreOS VM.
+CoreOS.
 
 ::
 
     make binary-local-static BUILDTAGS="containers_image_ostree_stub exclude_graphdriver_devicemapper netgo"
 
 The resulting binary is placed at ``./skopeo``. Copy this to the ``tools``
-directory. In this case, setuid is not needed.
+directory.
 
 ::
 
     cp skopeo /rktmachine/tools
 
-Adding Avahi_ is a more difficult process since it is not provided as a
-statically linked binary. The libdaemon0_ dependency also needs to be compiled
-with ``-fPIC``.
+Adding Avahi_ is similarly not provided as a statically linked binary. The
+libdaemon0_ dependency also needs to be compiled with ``-fPIC``.
 
 .. _Avahi: http://www.avahi.org
 .. _libdaemon0: http://0pointer.de/lennart/projects/libdaemon
@@ -291,6 +318,21 @@ directory.
 
     cp /rktmachine/install/sbin/avahi-daemon /rktmachine/tools
 
+For the last startup file, create a default container policy file for insertion
+at ``/etc/containers/policy.json`` on the CoreOS VM.
+
+::
+
+    $ cat > /rktmachine/tools/policy.json <<EOF
+    {
+        "default": [
+            {
+                "type": "insecureAcceptAnything"
+            }
+        ]
+    }
+    EOF
+
 Finally build the ``tools.tar.gz`` file.
 
 ::
@@ -304,7 +346,7 @@ we will convert the raw image to qcow2 format when we are finished creating it.
 
 ::
 
-    qemu-img create -f raw tools.raw 64M
+    qemu-img create -f raw tools.raw 32M
 
 Exit the container and format the image file as an ext4 filesystem.
 
@@ -346,8 +388,9 @@ Cleanup the build files on the CoreOS VM.
 
 ::
 
-    sudo rm -fr acbuild avahi-0.7 docker2aci go install libdaemon-0.14 \
-      libdaemon-0.14.tar.gz tools tools.mnt tools.raw tools.tar.gz v0.7.tar.gz
+    sudo rm -fr avahi-0.7 docker2aci go gpgme-1.10.0 gpgme-1.10.0.tar.bz2 \
+      install libdaemon-0.14 libdaemon-0.14.tar.gz lvm2 tools tools.mnt \
+      tools.raw tools.tar.gz v0.7.tar.gz
 
 
 Rebuilding macOS Corectl Binaries
