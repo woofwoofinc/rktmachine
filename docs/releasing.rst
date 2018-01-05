@@ -6,7 +6,6 @@ Release Checklist
 1. Check version number is correct in ``Info.plist`` and ``docs/conf.py``.
 2. Build release DMG and upload to GitHub releases.
 3. Build documentation and upload to GitHub pages.
-4. Update version numbers for next development cycle.
 
 
 Building a Release DMG
