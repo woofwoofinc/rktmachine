@@ -409,7 +409,7 @@ For this, we use:
 
     sudo rkt run \
         --interactive \
-        --port=http:80 \
+        --port=80:80 \
         --volume rktmachine,kind=host,source=/Users/docrualaoich/notebooks/ \
         jupyter \
         --mount volume=rktmachine,target=/rktmachine \
@@ -422,7 +422,7 @@ and use ``$(pwd)`` as the volume source.
 
     sudo rkt run \
         --interactive \
-        --port=http:80 \
+        --port=80:80 \
         --volume rktmachine,kind=host,source=$(pwd) \
         jupyter \
         --mount volume=rktmachine,target=/rktmachine \
