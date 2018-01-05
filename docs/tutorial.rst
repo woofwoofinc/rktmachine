@@ -161,8 +161,7 @@ containers for rkt. It comes preinstalled by RktMachine on the CoreOS VM.
 
 Start the container from scratch.
 
-(Note that superuser privileges are needed to run buildah commands and that the
-installation of buildah on the CoreOS VM is setuid root.)
+(Note that superuser privileges are needed to run buildah commands.)
 
 ::
 
