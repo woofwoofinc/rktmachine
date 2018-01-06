@@ -1,13 +1,16 @@
 .. _workingwithrkt:
 
-Working With rkt
+Working with rkt
 ================
 The `rkt <https://github.com/rkt/rkt>`_ tool is a command line interface for
-running application containers.
+running ACI containers. It also supports running Docker containers from Docker
+register download and automatic conversion to ACI with docker2aci_.
+
+.. _docker2aci: https://github.com/appc/docker2aci
 
 There is an introduction to using rkt in the :ref:`tutorial`. Alternatively,
-you can see the `Getting Started with rkt`_ guide in the `rkt documentation`_.
-If you are already familiar with Docker, then this Medium post about
+the `Getting Started with rkt`_ guide in the `rkt documentation`_ is very
+helpful. If you are already familiar with Docker, then this Medium post about
 `Moving from Docker to rkt`_ may also help you.
 
 .. _Getting Started with rkt: https://coreos.com/rkt/docs/latest/getting-started-guide.html
@@ -73,7 +76,7 @@ The rkt command comes with built in help pages:
           --user-config=                    user configuration directory
 
 If you have followed the :ref:`tutorial` or are already running a rkt container
-then the running container can be seen using the rkt list command.
+then the running container can be seen using the ``rkt list`` command.
 
 ::
 
@@ -81,10 +84,10 @@ then the running container can be seen using the rkt list command.
     UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
     c7d3aaca    dev-rktmachine  dev-rktmachine  running 6 days ago  6 days ago  default:ip4=172.16.28.2
 
-Stop a running container using rkt stop.
+Stop a running container using ``rkt stop``.
 
 .. NOTE::
-   The rkt stop command is run as the superuser because root privileges are
+   The ``rkt stop`` command is run as the superuser because root privileges are
    required to start/stop containers on a system. However, listing the
    containers as earlier is fine as a regular user since it only needs access
    to rkt management data, not kernel calls.
@@ -102,9 +105,9 @@ The container will show as exited in the list now.
     UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
     c7d3aaca    dev-rktmachine  dev-rktmachine  exited  6 days ago  6 days ago
 
-Eventually, stopped containers can be removed by running rkt gc. This has a
-grace period of 30 minutes where stopped containers are not removed. The
-garbage collection can be forced by setting the grace period to zero with
+Stopped containers can be removed permanently by running ``rkt gc``. This has a
+default grace period of 30 minutes where stopped containers are not removed.
+The garbage collection can be forced by setting the grace period to zero with
 ``--grace-period=0s``.
 
 ::
@@ -115,8 +118,7 @@ garbage collection can be forced by setting the grace period to zero with
     $ rkt list
     UUID        APP             IMAGE NAME                      STATE   CREATED     STARTED     NETWORKS
 
-
-To see which container images are available to run, use rkt image list.
+To see container images available to run, use ``rkt image list``.
 
 ::
 
@@ -137,21 +139,22 @@ An example is:
         --interactive \
         --volume rktmachine,kind=host,source=$(pwd) \
         dev-rktmachine \
-        --mount volume=rktmachine,target=/rktmachine
+        --mount volume=rktmachine,target=/rktmachine \
+        --exec /bin/bash
 
 In this case, the current working directory is mounted onto the container. This
 is a handy shortcut when already in an NFS mounted directory on the CoreOS VM.
 On the container, this directory is available at ``/rktmachine``.
 
-Use ``exit`` to finish the interactive session.
+Use ``exit`` to finish an interactive session.
 
 .. NOTE::
    To exit a non-interactive container or a non-responsive interactive
    container, press Ctrl+] three times quickly.
 
-To delete a container image entirely use rkt image rm. This will mean that new
-instances of the container cannot be started until the container is
-reinstalled.
+To delete a container image entirely use ``rkt image rm``. This will mean that
+new instances of the container cannot be started until the container is
+reinstalled in rkt.
 
 ::
 
@@ -186,12 +189,12 @@ use.
 .. CAUTION::
    Most services do not default to listening to all network interfaces. Instead
    they typically just listen on the localhost network. This is a problem when
-   specifying service to run inside a container because the localhost network on
-   the container will not be available outside of the container. This means we
-   cannot access the container service from our host computer.
+   specifying a service to run inside a container because the localhost network
+   in the container will not be available outside of the container. This means
+   we cannot access the container service from our host computer.
 
    Most services have command line options to change the network interface on
    which the service listens. Usually, it is sufficient to change this to be
-   the ``0.0.0.0`` interface, i.e. listen on all network interfaces on the
+   the 0.0.0.0 interface, i.e. listen on all network interfaces on the
    container. This will then include the external network interface which our
    host computer will use to attempt to connect to the container.

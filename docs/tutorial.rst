@@ -344,7 +344,15 @@ Then import the container into rkt by running:
 
     rkt --insecure-options=image fetch ./jupyter.aci
 
-Since this is a large image, it will take a short while for the container to be
+.. CAUTION::
+   The ``--insecure-options=image`` flag is here because the ``jupyter.aci``
+   image we created earlier is unsigned. The rkt tool verifies images by
+   default and will error here otherwise. We can be confident about the
+   container we created but it is very unsafe to use this option with untrusted
+   containers since that would allow arbitrary code to be executed on your
+   system.
+
+Since this is a large image, it will take some time for the container to be
 imported. Once done, we can see it by listing the containers available in rkt
 on the CoreOS VM.
 
@@ -355,16 +363,17 @@ on the CoreOS VM.
     sha512-e1e9e1991658     jupyter                                 3.3GiB  4 minutes ago   4 minutes ago
     sha512-fdd18d9c2103     coreos.com/rkt/stage1-coreos:1.21.0     184MiB  53 minutes ago  53 minutes ago
 
-Start an instance of the container using ``rkt run``. Note that superuser
-privileges are needed.
+Now start an instance of the container using ``rkt run``. Note that superuser
+privileges are required for actually starting and running a container with rkt.
 
 ::
 
     sudo rkt run --port=80:80 jupyter
 
 This starts the container we built in the previous section and runs the Jupyter
-start command we specified. This makes a Jupyter server available on port 80 of
-the CoreOS VM.
+start command we specified. The ``--port`` parameter makes the Jupyter server
+available on port 80 outside the container. This is also wired to port 80 of the
+CoreOS VM automatically.
 
 The RktMachine CoreOS VM comes installed with `Avahi mDNS`_. This is configured
 to broadcast a ``rktmachine.local`` DNS entry for the CoreOS VM. So you will be
@@ -384,8 +393,8 @@ See the section on :ref:`workingwithrkt` for more details on using rkt.
 Running rkt Containers Interactively
 ------------------------------------
 It is often useful to run a Bash shell on a container instead of the default
-command. This is particularly the case when we also mount directories from the
-host to the rkt container.
+command. And similarly it is common to mount directories from the host to the
+rkt container.
 
 For instance, suppose we wanted to run a Jupyter server which automatically
 included a set of notebooks from the host macOS. The Jupyter server can be
@@ -397,11 +406,11 @@ For this, we use:
 - The ``--interactive`` option to the ``rkt run`` to specify that we want to be
   able to type commands to the container.
 - The ``--exec /bin/bash`` option to override the default command line in the
-  container and to run Bash instead. This means we have now have an interactive
-  shell on the container instead of a default Jupyter server.
+  container and run Bash instead. This gives us an interactive shell on the
+  container instead of the default Jupyter server.
 - ``--volume rktmachine,kind=host,source=/Users/<username>/path/to/notebooks``
   defines a storage named ``rktmachine`` which we can mount to the container.
-  It will be linked to the directory given in the ``source`` attribute.
+  It will be linked to the directory given in the source attribute.
 - Finally, we use ``--mount volume=rktmachine,target=/rktmachine`` to add this
   storage inside the container under the path ``/rktmachine``.
 
