@@ -81,15 +81,16 @@ buildah run $IMAGE -- update-alternatives --install /usr/bin/go go /usr/lib/go-1
 # Buildah Build
 ################################################################################
 
-buildah run $IMAGE -- apt-get install -qq libapparmor-dev gpgsm
-buildah run $IMAGE -- apt-get install -qq libgpg-error-dev libassuan-dev libseccomp-dev
+buildah run $IMAGE -- apt-get install -qq btrfs-tools gpgsm libassuan-dev
+buildah run $IMAGE -- apt-get install -qq libapparmor-dev libgpg-error-dev
+buildah run $IMAGE -- apt-get install -qq libseccomp-dev
 
 
 ################################################################################
 # Skopeo Build
 ################################################################################
 
-buildah run $IMAGE -- apt-get install -qq btrfs-tools libglib2.0-dev
+buildah run $IMAGE -- apt-get install -qq libglib2.0-dev
 
 
 ################################################################################
