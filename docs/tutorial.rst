@@ -256,7 +256,6 @@ and then using the package manager for that to install the rest of the parts.)
     sudo buildah run jupyter -- bash Miniconda3-latest-Linux-x86_64.sh -b -p /usr -f
     sudo buildah run jupyter -- rm -fr Miniconda3-latest-Linux-x86_64.sh
     sudo buildah run jupyter -- conda install -y numpy matplotlib pandas scikit-learn jupyter
-    sudo buildah run jupyter -- conda install -y pytorch torchvision -c soumith
     sudo buildah run jupyter -- mkdir -p /home/jupyter
 
 To be able to use the Jupyter service from your macOS, you need to make the
