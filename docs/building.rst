@@ -493,14 +493,21 @@ Then add the Corectl repository to your Go tree.
     git clone https://github.com/TheNewNormal/corectl $GOPATH/src/github.com/TheNewNormal/corectl
     cd $GOPATH/src/github.com/TheNewNormal/corectl
 
-Finally, select the release to build and perform the build. The second checkout
-moves to the most recent known good and includes updated CoreOS Linux public
-keys for image signature verification.
+Select the release to build and hack the build file to include a Hyperkit fix.
+The second checkout moves to the most recent known good. The cherry pick
+includes the latest CoreOS Linux public keys for image signature verification.
 
 ::
 
     git checkout v0.7.18
     git checkout a180a1bff84da47e5f2babd3d1a912f1ab26743c
+    git cherry-pick 634cb7bb304f21d5127a5f967838fd8f7702eed2
+
+    sed -i .bk 's/$(GIT) checkout $(HYPERKIT_COMMIT);/$(GIT) checkout $(HYPERKIT_COMMIT); $(GIT) cherry-pick 171c5b060272f821d0d01ff3e9d45639b0073e75;/' Makefile
+
+Finally, perform the build.
+
+::
 
     make clean
     make tarball
