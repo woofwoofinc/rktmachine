@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Building &#8212; RktMachine</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/woofwoofinc.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Documentation" href="documentation.html" />
+    <link rel="prev" title="Development Tools Container" href="dev.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          RktMachine</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.3</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#installing-rktmachine">Installing RktMachine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#starting-the-rktmachine-coreos-vm">Starting the RktMachine CoreOS VM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#building-a-rkt-container">Building a rkt Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#installing-and-running-rkt-containers">Installing and Running rkt Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#running-rkt-containers-interactively">Running rkt Containers Interactively</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rkt.html">Working with rkt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rkt.html#building-containers-for-rkt">Building Containers for rkt</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#coreos-vm-does-not-boot">CoreOS VM Does Not Boot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-unavailable">NFS Mount Unavailable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-not-writable">NFS Mount Not Writable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#reclaiming-vm-root-disk-image-space">Reclaiming VM Root Disk Image Space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-coreos">Why CoreOS?</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Development Tools Container</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#building">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#xcode">XCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rebuilding-root-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rebuilding-tools-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rebuilding-macos-corectl-binaries">Rebuilding macOS Corectl Binaries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releasing.html">Releasing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#release-checklist">Release Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#building-a-release-dmg">Building a Release DMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#preparing-the-github-release">Preparing the GitHub Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#publishing-the-documentation">Publishing the Documentation</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conduct.html">Contributor Covenant Code of Conduct</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-pledge">Our Pledge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-standards">Our Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-responsibilities">Our Responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#enforcement">Enforcement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#attribution">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="dev.html" title="Previous Chapter: Development Tools Container"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Development T...</span>
+    </a>
+  </li>
+  <li>
+    <a href="documentation.html" title="Next Chapter: Documentation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Documentation &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="building">
+<h1>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="xcode">
+<h2>XCode<a class="headerlink" href="#xcode" title="Permalink to this headline">¶</a></h2>
+<p>The macOS menu bar application is built using Xcode. To run a development build
+of RktMachine, start by opening the RktMachine project file in Xcode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ open RktMachine.xcodeproj
+</pre></div>
+</div>
+<p>Make sure you are not already running RktMachine. Then use the
+<code class="docutils literal notranslate"><span class="pre">Product</span> <span class="pre">-&gt;</span> <span class="pre">Run</span></code> menu option or the play button in the top left to build and
+run the RktMachine source code.</p>
+</div>
+<div class="section" id="rebuilding-root-qcow2">
+<h2>Rebuilding <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code><a class="headerlink" href="#rebuilding-root-qcow2" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code> image file is the base file used in new CoreOS VMs to
+provide persistent storage in the user home directory and elsewhere. Since the
+CoreOS VM initialisation formats the root image if necessary, this image file
+only needs to be the right size. In particular, we do not need to create a
+filesystem on the image.</p>
+<p>In this section, we detail how to create the <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code> image file to
+include under <code class="docutils literal notranslate"><span class="pre">src/vm/root.qcow2</span></code> in case there is a need to rebuild it, e.g.
+to set a new default image size.</p>
+<p>SSH to the CoreOS VM and install the <code class="docutils literal notranslate"><span class="pre">dev-rktmachine</span></code> container image if not
+already available. (See <a class="reference internal" href="dev.html#dev"><span class="std std-ref">Development Tools Container</span></a>.) Then start the container as before.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo rkt run \
+    --interactive \
+    --volume rktmachine,kind=host,source=$(pwd) \
+    dev-rktmachine \
+    --mount volume=rktmachine,target=/rktmachine
+</pre></div>
+</div>
+<p>Once in an interactive session on the container, change to the <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code>
+directory so output will be on the mounted directory and available to the
+CoreOS VM after the container is stopped.</p>
+<p>Then run the qemu-img command to create the qcow2 disk image file. Finally, exit
+the container.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">qemu</span><span class="o">-</span><span class="n">img</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">qcow2</span> <span class="n">root</span><span class="o">.</span><span class="n">qcow2</span> <span class="mi">40</span><span class="n">G</span>
+<span class="n">exit</span>
+</pre></div>
+</div>
+<p>Once back on the CoreOS VM, the <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code> file will be present in the
+current directory. The easiest way to copy the image file to the host macOS
+machine is to copy it to the NFS mounted <code class="docutils literal notranslate"><span class="pre">/Users</span></code> directory on the CoreOS VM.</p>
+</div>
+<div class="section" id="rebuilding-tools-qcow2">
+<h2>Rebuilding <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code><a class="headerlink" href="#rebuilding-tools-qcow2" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code> image file contains binaries needed for VM setup which are
+too large to be delivered by Cloud Init. Specifically, it contains:</p>
+<ul class="simple">
+<li>buildah binaries for building new container images on the CoreOS VM.</li>
+<li>OCI image and runtime tools.</li>
+<li>skopeo for working with and converting container images on the CoreOS VM.</li>
+<li>docker2aci for converting Docker images to ACI format.</li>
+<li>A statically linked avahid for broadcasting mDNS from the CoreOS VM so it can
+be addressed as <code class="docutils literal notranslate"><span class="pre">rktmachine.local</span></code> instead of by IP address.</li>
+</ul>
+<p>The executable files are stored in a gzipped tar for compression. The image
+file itself cannot be compressed since this causes issues booting with corectl.
+The uncompression is not a significant problem since it is only needed for a
+one-shot operation on CoreOS VM boot.</p>
+<p>As in the previous section, SSH to the CoreOS VM and install the
+<code class="docutils literal notranslate"><span class="pre">dev-rktmachine</span></code> container image if not already available. (See <a class="reference internal" href="dev.html#dev"><span class="std std-ref">Development Tools Container</span></a>.)
+Then start the container as before.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo rkt run \
+    --interactive \
+    --volume rktmachine,kind=host,source=$(pwd) \
+    dev-rktmachine \
+    --mount volume=rktmachine,target=/rktmachine
+</pre></div>
+</div>
+<p>Once in an interactive session on the container, change to the <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code>
+directory so output will be on the mounted directory and available to the
+CoreOS VM after the container is stopped.</p>
+<p>We want to prepare the <code class="docutils literal notranslate"><span class="pre">tools.tar.gz</span></code> file first before handling the image
+creation. Create a directory to group the archive contents.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">mkdir</span> <span class="n">tools</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://github.com/projectatomic/buildah">buildah</a> project is not packaged as a binary so we need to build it
+manually. The problem is that CoreOS is a minimal distribution with no support
+for installing dynamically linked library files. So to work on the CoreOS VM we
+need to build binaries which are predominately statically linked, using only
+commonly available dynamic libraries installed on CoreOS already.</p>
+<p>For the buildah binary, we need some additional dependencies built as static
+libraries. These libraries only need to be installed on the build container.</p>
+<p>First, libgpgme. Build this as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">gnupg</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">ftp</span><span class="o">/</span><span class="n">gcrypt</span><span class="o">/</span><span class="n">gpgme</span><span class="o">/</span><span class="n">gpgme</span><span class="o">-</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">0.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="n">tar</span> <span class="n">xjvf</span> <span class="n">gpgme</span><span class="o">-</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">0.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="n">cd</span> <span class="n">gpgme</span><span class="o">-</span><span class="mf">1.10</span><span class="o">.</span><span class="mi">0</span>
+<span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">static</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">shared</span>
+<span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>And for a static libdevmapper, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">sourceware</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">lvm2</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">lvm2</span>
+<span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">static_link</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">pkgconfig</span>
+<span class="n">make</span> <span class="n">device</span><span class="o">-</span><span class="n">mapper</span>
+<span class="n">make</span> <span class="n">install_device</span><span class="o">-</span><span class="n">mapper</span>
+</pre></div>
+</div>
+<p>Now, start on the buildah compilation by getting the latest buildah sources and
+creating a source tree for Go building.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">go</span>
+<span class="n">export</span> <span class="n">GOPATH</span><span class="o">=/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">go</span>
+
+<span class="n">go</span> <span class="n">get</span> <span class="o">-</span><span class="n">d</span> <span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">projectatomic</span><span class="o">/</span><span class="n">buildah</span>
+</pre></div>
+</div>
+<p>And build using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $GOPATH/src/github.com/projectatomic/buildah
+make buildah TAGS=&quot;apparmor seccomp&quot;
+install -D -m0755 buildah /rktmachine/tools/buildah
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://github.com/appc/docker2aci">docker2aci</a> binary is similarly not available as a binary. The build output
+is already a static binary so it can used on the CoreOS VM without difficulty.</p>
+<p>In the case of docker2aci the main issue is that the latest version in master
+only supports OCI containers which conform to the v1.0.0-rc2 version of the
+OCI container specification. The problem here is that buildah produces OCI
+containers which match version v1.0.0-rc5 which is incompatible with
+v1.0.0.0-rc2.</p>
+<p>In order to get a useful docker2aci, we instead use a fork which has updated the
+supported OCI container version to one that works with OCI containers produced
+by buildah. This fork is maintained at <a class="reference external" href="https://github.com/woofwoofinc/docker2aci">woofwoofinc/docker2aci</a>.</p>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code> directory and get the forked version of the
+docker2aci source code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">woofwoofinc</span><span class="o">/</span><span class="n">docker2aci</span> <span class="n">docker2aci</span>
+<span class="n">cd</span> <span class="n">docker2aci</span>
+</pre></div>
+</div>
+<p>Run the build script and copy the binary output to the <code class="docutils literal notranslate"><span class="pre">tools</span></code> directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">build</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">cp</span> <span class="nb">bin</span><span class="o">/</span><span class="n">docker2aci</span> <span class="o">/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">tools</span>
+</pre></div>
+</div>
+<p>Similarly, the <a class="reference external" href="https://github.com/opencontainers/image-tools">oci-image-tool</a> and <a class="reference external" href="https://github.com/opencontainers/runtime-tools">oci-runtime-tool</a> are not available as
+binaries but they are also easy to build from source. Again, the build outputs
+static binaries so they can be used on the CoreOS VM without difficulty.</p>
+<p>Get the OCI sources and create a source tree for Go building.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">go</span> <span class="n">get</span> <span class="o">-</span><span class="n">d</span> <span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opencontainers</span><span class="o">/</span><span class="n">image</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">cmd</span><span class="o">/</span><span class="n">oci</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">tool</span>
+<span class="n">go</span> <span class="n">get</span> <span class="o">-</span><span class="n">d</span> <span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opencontainers</span><span class="o">/</span><span class="n">runtime</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">cmd</span><span class="o">/</span><span class="n">oci</span><span class="o">-</span><span class="n">runtime</span><span class="o">-</span><span class="n">tool</span>
+</pre></div>
+</div>
+<p>And build:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $GOPATH/src/github.com/opencontainers/image-tools
+make all
+BINDIR=/rktmachine/tools make install
+
+cd $GOPATH/src/github.com/opencontainers/runtime-tools
+make all
+BINDIR=/rktmachine/tools make install
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">BINDIR</span></code> environment setting takes care of installing the binaries into
+the mounted <code class="docutils literal notranslate"><span class="pre">tools</span></code> image.</p>
+<p>Adding <a class="reference external" href="https://github.com/projectatomic/skopeo">skopeo</a> is similar again. Compilation from source is required but in
+this case static binaries are not the default. They are easily specified in the
+build however so it is no difficulty.</p>
+<p>Get the skopeo sources and create a source tree for Go building.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>go get -d github.com/projectatomic/skopeo/cmd/skopeo
+cd $GOPATH/src/github.com/projectatomic/skopeo
+</pre></div>
+</div>
+<p>The skopeo build provides a target for performing a statically linked build. We
+use that together with build tags to exclude shared libraries unavailable on
+CoreOS.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">binary</span><span class="o">-</span><span class="n">local</span><span class="o">-</span><span class="n">static</span> <span class="n">BUILDTAGS</span><span class="o">=</span><span class="s2">&quot;containers_image_ostree_stub exclude_graphdriver_devicemapper netgo&quot;</span>
+</pre></div>
+</div>
+<p>The resulting binary is placed at <code class="docutils literal notranslate"><span class="pre">./skopeo</span></code>. Copy this to the <code class="docutils literal notranslate"><span class="pre">tools</span></code>
+directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">skopeo</span> <span class="o">/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">tools</span>
+</pre></div>
+</div>
+<p>Adding <a class="reference external" href="http://www.avahi.org">Avahi</a> is similarly not provided as a statically linked binary. The
+<a class="reference external" href="http://0pointer.de/lennart/projects/libdaemon">libdaemon0</a> dependency also needs to be compiled with <code class="docutils literal notranslate"><span class="pre">-fPIC</span></code>.</p>
+<p>Still in the container, change to the <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code> directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+</pre></div>
+</div>
+<p>Then download and extract the libdaemon0 sources.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mi">0</span><span class="n">pointer</span><span class="o">.</span><span class="n">de</span><span class="o">/</span><span class="n">lennart</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">libdaemon</span><span class="o">/</span><span class="n">libdaemon</span><span class="o">-</span><span class="mf">0.14</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="n">xzf</span> <span class="n">libdaemon</span><span class="o">-</span><span class="mf">0.14</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">libdaemon</span><span class="o">-</span><span class="mf">0.14</span>
+</pre></div>
+</div>
+<p>Configure to build with <code class="docutils literal notranslate"><span class="pre">-fPIC</span></code> and without shared libraries. The avahi build
+prefers the shared libraries so by not building them we force the compile to use
+the static library instead.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span> <span class="o">--</span><span class="k">with</span><span class="o">-</span><span class="n">pic</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">shared</span>
+<span class="n">make</span> <span class="n">clean</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Next download the Avahi source.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">lathiat</span><span class="o">/</span><span class="n">avahi</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">v0</span><span class="o">.</span><span class="mf">7.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="n">xzf</span> <span class="n">v0</span><span class="o">.</span><span class="mf">7.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">avahi</span><span class="o">-</span><span class="mf">0.7</span>
+</pre></div>
+</div>
+<p>Use Autoconf/Automake to create a <code class="docutils literal notranslate"><span class="pre">./configure</span></code> file. There are a number of
+warnings and cautions in the following but the produced binary works okay.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NOCONFIGURE</span><span class="o">=</span><span class="mi">1</span> <span class="o">./</span><span class="n">autogen</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Build avahi with a set of options that turns nearly everything off.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONFIGURE_OPT=&quot;
+  --prefix=/rktmachine/install
+  --disable-shared
+  --disable-glib --disable-gobject
+  --disable-qt3 --disable-qt4
+  --disable-gtk --disable-gtk3
+  --disable-gdbm
+  --disable-python --disable-pygtk --disable-python-dbus
+  --disable-mono --disable-monodoc
+  --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-html
+  --disable-doxygen-xml
+  --disable-manpages --disable-xmltoman
+  --disable-dbus
+  --with-distro=none
+  --with-avahi-user=root
+  --with-avahi-group=daemon
+  --localstatedir=/var
+&quot;
+
+./configure ${CONFIGURE_OPT}
+make clean install
+</pre></div>
+</div>
+<p>All going well, the build artifacts will be in <code class="docutils literal notranslate"><span class="pre">/rktmachine/install</span></code>. The
+only binary we want is <code class="docutils literal notranslate"><span class="pre">avahi-daemon</span></code> so copy that to the <code class="docutils literal notranslate"><span class="pre">tools</span></code>
+directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">avahi</span><span class="o">-</span><span class="n">daemon</span> <span class="o">/</span><span class="n">rktmachine</span><span class="o">/</span><span class="n">tools</span>
+</pre></div>
+</div>
+<p>For the last startup file, create a default container policy file for insertion
+at <code class="docutils literal notranslate"><span class="pre">/etc/containers/policy.json</span></code> on the CoreOS VM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat &gt; /rktmachine/tools/policy.json &lt;&lt;EOF
+{
+    &quot;default&quot;: [
+        {
+            &quot;type&quot;: &quot;insecureAcceptAnything&quot;
+        }
+    ]
+}
+EOF
+</pre></div>
+</div>
+<p>Finally build the <code class="docutils literal notranslate"><span class="pre">tools.tar.gz</span></code> file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">GZIP</span><span class="o">=-</span><span class="mi">9</span> <span class="n">tar</span> <span class="n">czvf</span> <span class="n">tools</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">tools</span>
+</pre></div>
+</div>
+<p>Before exiting the container, create a raw image file using QEMU. This is
+instead of a qcow2 image file because raw images are easier to mount. Later,
+we will convert the raw image to qcow2 format when we are finished creating it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qemu</span><span class="o">-</span><span class="n">img</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">raw</span> <span class="n">tools</span><span class="o">.</span><span class="n">raw</span> <span class="mi">32</span><span class="n">M</span>
+</pre></div>
+</div>
+<p>Exit the container and format the image file as an ext4 filesystem.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">mkfs</span><span class="o">.</span><span class="n">ext4</span> <span class="o">-</span><span class="n">i</span> <span class="mi">8192</span> <span class="o">-</span><span class="n">L</span> <span class="n">tools</span> <span class="o">-</span><span class="n">F</span> <span class="n">tools</span><span class="o">.</span><span class="n">raw</span>
+</pre></div>
+</div>
+<p>Next, mount the <code class="docutils literal notranslate"><span class="pre">tools.raw</span></code> image file to the CoreOS VM briefly and copy
+<code class="docutils literal notranslate"><span class="pre">tools.tar.gz</span></code> onto the image.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">tools</span><span class="o">.</span><span class="n">mnt</span>
+<span class="n">sudo</span> <span class="n">mount</span> <span class="o">-</span><span class="n">o</span> <span class="n">loop</span> <span class="n">tools</span><span class="o">.</span><span class="n">raw</span> <span class="n">tools</span><span class="o">.</span><span class="n">mnt</span>
+<span class="n">sudo</span> <span class="n">cp</span> <span class="n">tools</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">tools</span><span class="o">.</span><span class="n">mnt</span>
+<span class="n">sudo</span> <span class="n">umount</span> <span class="n">tools</span><span class="o">.</span><span class="n">mnt</span>
+</pre></div>
+</div>
+<p>Finally restart the container and do the file conversion to create a qcow2
+format image from the raw image file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo rkt run \
+    --interactive \
+    --volume rktmachine,kind=host,source=$(pwd) \
+    dev-rktmachine \
+    --mount volume=rktmachine,target=/rktmachine \
+    --exec /bin/bash
+
+cd /rktmachine
+qemu-img convert -f raw -O qcow2 tools.raw tools.qcow2
+</pre></div>
+</div>
+<p>Exit the container and copy the <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code> image to where it is needed,
+typically to the RktMachine repository under <code class="docutils literal notranslate"><span class="pre">src/vm/tools.qcow2</span></code>. As before,
+the easiest way to copy the image file to the host machine is to copy it to
+the NFS mounted user directory on the CoreOS VM.</p>
+<p>Cleanup the build files on the CoreOS VM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">fr</span> <span class="n">avahi</span><span class="o">-</span><span class="mf">0.7</span> <span class="n">docker2aci</span> <span class="n">go</span> <span class="n">gpgme</span><span class="o">-</span><span class="mf">1.10</span><span class="o">.</span><span class="mi">0</span> <span class="n">gpgme</span><span class="o">-</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">0.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span> \
+  <span class="n">install</span> <span class="n">libdaemon</span><span class="o">-</span><span class="mf">0.14</span> <span class="n">libdaemon</span><span class="o">-</span><span class="mf">0.14</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">lvm2</span> <span class="n">tools</span> <span class="n">tools</span><span class="o">.</span><span class="n">mnt</span> \
+  <span class="n">tools</span><span class="o">.</span><span class="n">raw</span> <span class="n">tools</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">v0</span><span class="o">.</span><span class="mf">7.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rebuilding-macos-corectl-binaries">
+<h2>Rebuilding macOS Corectl Binaries<a class="headerlink" href="#rebuilding-macos-corectl-binaries" title="Permalink to this headline">¶</a></h2>
+<p>The latest versions of the Corectl binaries can be downloaded from the
+<a class="reference external" href="https://github.com/TheNewNormal/corectl/releases">Corectl releases</a> for inclusion in the RktMachine application.</p>
+<p>Alternatively the Corectl binaries can be built from source, e.g. to test
+changes or for debugging purposes.</p>
+<p>Since the Corectl binaries are run on the host macOS machine, it is more
+convenient to build on macOS rather than attempting to cross compile in the
+development rkt container.</p>
+<p>Start by installing the Ocaml and Go compilers as well as the libev compilation
+dependency needed to make the qemu-tool binary. (This is unused in RktMachine
+but needed for the compile.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">opam</span> <span class="n">go</span> <span class="n">libev</span>
+</pre></div>
+</div>
+<p>The compilation will require Ocaml version 4.05.0. Check the Ocaml version by
+running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ocaml -version
+The OCaml toplevel, version 4.06.0
+</pre></div>
+</div>
+<p>If you need change the installed version, use the following to unlink the
+installed version and to download and install the 4.05.0 version.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">unlink</span> <span class="n">ocaml</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Homebrew</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">core</span><span class="o">/</span><span class="mi">00</span><span class="n">f632a7990ac314d63f9cdcb831bea7e8371c61</span><span class="o">/</span><span class="n">Formula</span><span class="o">/</span><span class="n">ocaml</span><span class="o">.</span><span class="n">rb</span>
+</pre></div>
+</div>
+<p>Verify the Ocaml version is correct.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ocaml -version
+The OCaml toplevel, version 4.05.0
+</pre></div>
+</div>
+<p>Next, clean any previous OPAM installation and set up the Ocaml libraries
+needed.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">The following instructions are unsuitable if you normally do Ocaml
+development on your macOS. You are unlikely to appreciate your
+<code class="docutils literal notranslate"><span class="pre">~/.opam</span></code> directory being cleared.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">fr</span> <span class="o">~/.</span><span class="n">opam</span>
+<span class="n">opam</span> <span class="n">init</span> <span class="o">--</span><span class="n">yes</span>
+</pre></div>
+</div>
+<p>Create <code class="docutils literal notranslate"><span class="pre">~/.ocamlinit</span></code> to avoid compilation problems with topfind.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat &gt; ~/.ocamlinit
+let () =
+  try Topdirs.dir_directory (Sys.getenv &quot;OCAML_TOPLEVEL_PATH&quot;)
+  with Not_found -&gt; ()
+;;
+</pre></div>
+</div>
+<p>Continue the installation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>eval `opam config env`
+opam install --yes ocamlfind
+opam install --yes uri
+opam install --yes conf-libev
+opam install --yes qcow-format
+opam install --yes &quot;lwt=3.0.0&quot;
+opam install --yes &quot;io-page=1.6.1&quot;
+</pre></div>
+</div>
+<p>Do the same for Go. Clean any previous installation and setup for the corectl
+build.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">The following instructions are unsuitable if you normally do Go
+development on your macOS. You are unlikely to appreciate your
+<code class="docutils literal notranslate"><span class="pre">~/go</span></code> directory being cleared.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export GOPATH=~/go
+rm -fr $GOPATH
+</pre></div>
+</div>
+<p>Then add the Corectl repository to your Go tree.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/TheNewNormal/corectl $GOPATH/src/github.com/TheNewNormal/corectl
+cd $GOPATH/src/github.com/TheNewNormal/corectl
+</pre></div>
+</div>
+<p>Select the release to build and hack the build file to include a Hyperkit fix.
+The second checkout moves to the most recent known good. The cherry pick
+includes the latest CoreOS Linux public keys for image signature verification.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v0</span><span class="o">.</span><span class="mf">7.18</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">a180a1bff84da47e5f2babd3d1a912f1ab26743c</span>
+<span class="n">git</span> <span class="n">cherry</span><span class="o">-</span><span class="n">pick</span> <span class="mi">634</span><span class="n">cb7bb304f21d5127a5f967838fd8f7702eed2</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">bk</span> <span class="s1">&#39;s/$(GIT) checkout $(HYPERKIT_COMMIT);/$(GIT) checkout $(HYPERKIT_COMMIT); $(GIT) cherry-pick 171c5b060272f821d0d01ff3e9d45639b0073e75;/&#39;</span> <span class="n">Makefile</span>
+</pre></div>
+</div>
+<p>Finally, perform the build.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">tarball</span>
+</pre></div>
+</div>
+<p>The output binaries are placed in
+<code class="docutils literal notranslate"><span class="pre">~/go/src/github.com/TheNewNormal/corectl/bin</span></code>. It is only necessary to
+copy <code class="docutils literal notranslate"><span class="pre">corectl</span></code>, <code class="docutils literal notranslate"><span class="pre">corectld</span></code>, and <code class="docutils literal notranslate"><span class="pre">corectld.runner</span></code> to the RktMachine
+repository since the QEMU tool is unused. The binaries should be placed under
+<code class="docutils literal notranslate"><span class="pre">src/bin</span></code> in the RktMachine repository.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

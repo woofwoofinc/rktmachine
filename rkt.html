@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Working with rkt &#8212; RktMachine</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/woofwoofinc.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          RktMachine</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.3</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#installing-rktmachine">Installing RktMachine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#starting-the-rktmachine-coreos-vm">Starting the RktMachine CoreOS VM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#building-a-rkt-container">Building a rkt Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#installing-and-running-rkt-containers">Installing and Running rkt Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#running-rkt-containers-interactively">Running rkt Containers Interactively</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with rkt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#building-containers-for-rkt">Building Containers for rkt</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#coreos-vm-does-not-boot">CoreOS VM Does Not Boot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-unavailable">NFS Mount Unavailable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-not-writable">NFS Mount Not Writable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#reclaiming-vm-root-disk-image-space">Reclaiming VM Root Disk Image Space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-coreos">Why CoreOS?</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Development Tools Container</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#building">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="building.html#xcode">XCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-root-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-tools-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-macos-corectl-binaries">Rebuilding macOS Corectl Binaries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releasing.html">Releasing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#release-checklist">Release Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#building-a-release-dmg">Building a Release DMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#preparing-the-github-release">Preparing the GitHub Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#publishing-the-documentation">Publishing the Documentation</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conduct.html">Contributor Covenant Code of Conduct</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-pledge">Our Pledge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-standards">Our Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-responsibilities">Our Responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#enforcement">Enforcement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#attribution">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="tutorial.html" title="Previous Chapter: Tutorial"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Tutorial</span>
+    </a>
+  </li>
+  <li>
+    <a href="troubleshooting.html" title="Next Chapter: Troubleshooting"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Troubleshooting &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="working-with-rkt">
+<span id="workingwithrkt"></span><h1>Working with rkt<a class="headerlink" href="#working-with-rkt" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference external" href="https://github.com/rkt/rkt">rkt</a> tool is a command line interface for
+running ACI containers. It also supports running Docker containers from Docker
+register download and automatic conversion to ACI with <a class="reference external" href="https://github.com/appc/docker2aci">docker2aci</a>.</p>
+<p>There is an introduction to using rkt in the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial</span></a>. Alternatively,
+the <a class="reference external" href="https://coreos.com/rkt/docs/latest/getting-started-guide.html">Getting Started with rkt</a> guide in the <a class="reference external" href="https://coreos.com/rkt/docs/latest">rkt documentation</a> is very
+helpful. If you are already familiar with Docker, then this Medium post about
+<a class="reference external" href="https://medium.com/&#64;adriaandejonge/moving-from-docker-to-rkt-310dc9aec938">Moving from Docker to rkt</a> may also help you.</p>
+<p>The rkt command comes with built in help pages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt --help
+NAME:
+    rkt - rkt, the application container runner
+
+USAGE:
+    rkt [command]
+
+VERSION:
+    1.21.0
+
+COMMANDS:
+    api-service         Run API service (experimental)
+    cat-manifest        Inspect and print the pod manifest
+    config              Print configuration for each stage in JSON format
+    enter               Enter the namespaces of an app within a rkt pod
+    export              Export an app from an exited pod to an ACI file
+    fetch               Fetch image(s) and store them in the local store
+    gc                  Garbage collect rkt pods no longer in use
+    image cat-manifest  Inspect and print the image manifest
+    image export        Export a stored image to an ACI file
+    image extract       Extract a stored image to a directory
+    image gc            Garbage collect local store
+    image list          List images in the local store
+    image render        Render a stored image to a directory with all its dependencies
+    image rm            Remove one or more images with the given IDs or image names from the local store
+    list                List pods
+    metadata-service    Run metadata service
+    prepare             Prepare to run image(s) in a pod in rkt
+    rm                  Remove all files and resources associated with an exited pod
+    run                 Run image(s) in a pod in rkt
+    run-prepared        Run a prepared application pod in rkt
+    status              Check the status of a rkt pod
+    stop                Stop a pod
+    trust               Trust a key for image verification
+    version             Print the version and exit
+    help                Help about any command
+
+DESCRIPTION:
+    A CLI for running app containers on Linux.
+
+    To get the help on any specific command, run &quot;rkt help command&quot;.
+
+OPTIONS:
+      --debug[=false]                   print out more debug information to stderr
+      --dir=/var/lib/rkt                rkt data directory
+      --insecure-options=none           comma-separated list of security features to disable.
+                                        Allowed values: &quot;none&quot;, &quot;image&quot;, &quot;tls&quot;, &quot;ondisk&quot;, &quot;http&quot;,
+                                        &quot;pubkey&quot;, &quot;capabilities&quot;, &quot;paths&quot;, &quot;seccomp&quot;, &quot;all-fetch&quot;,
+                                        &quot;all-run&quot;, &quot;all&quot;
+      --local-config=/etc/rkt           local configuration directory
+      --system-config=/usr/lib/rkt      system configuration directory
+      --trust-keys-from-https[=false]   automatically trust gpg keys fetched from https
+      --user-config=                    user configuration directory
+</pre></div>
+</div>
+<p>If you have followed the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial</span></a> or are already running a rkt container
+then the running container can be seen using the <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">list</span></code> command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt list
+UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
+c7d3aaca    dev-rktmachine  dev-rktmachine  running 6 days ago  6 days ago  default:ip4=172.16.28.2
+</pre></div>
+</div>
+<p>Stop a running container using <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">stop</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">stop</span></code> command is run as the superuser because root privileges are
+required to start/stop containers on a system. However, listing the
+containers as earlier is fine as a regular user since it only needs access
+to rkt management data, not kernel calls.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo rkt stop c7d3aaca
+&quot;c7d3aaca-8536-43f3-9b83-1ba8887b4fbb&quot;
+</pre></div>
+</div>
+<p>The container will show as exited in the list now.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt list
+UUID        APP             IMAGE NAME      STATE   CREATED     STARTED     NETWORKS
+c7d3aaca    dev-rktmachine  dev-rktmachine  exited  6 days ago  6 days ago
+</pre></div>
+</div>
+<p>Stopped containers can be removed permanently by running <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">gc</span></code>. This has a
+default grace period of 30 minutes where stopped containers are not removed.
+The garbage collection can be forced by setting the grace period to zero with
+<code class="docutils literal notranslate"><span class="pre">--grace-period=0s</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo rkt gc --grace-period=0s
+Garbage collecting pod &quot;c7d3aaca-8536-43f3-9b83-1ba8887b4fbb&quot;
+
+$ rkt list
+UUID        APP             IMAGE NAME                      STATE   CREATED     STARTED     NETWORKS
+</pre></div>
+</div>
+<p>To see container images available to run, use <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">image</span> <span class="pre">list</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt image list
+ID                  NAME                                SIZE    IMPORT TIME LAST USED
+sha512-e1e9e1991658 dev-rktmachine                      1.8GiB  6 days ago  6 days ago
+sha512-fdd18d9c2103 coreos.com/rkt/stage1-coreos:1.21.0 184MiB  6 days ago  6 days ago
+</pre></div>
+</div>
+<p>It is common to start interactive containers for development workflows and
+typically useful to mount directories, e.g. source code, from the host computer
+via the NFS mount on the CoreOS VM.</p>
+<p>An example is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo rkt run \
+    --interactive \
+    --volume rktmachine,kind=host,source=$(pwd) \
+    dev-rktmachine \
+    --mount volume=rktmachine,target=/rktmachine \
+    --exec /bin/bash
+</pre></div>
+</div>
+<p>In this case, the current working directory is mounted onto the container. This
+is a handy shortcut when already in an NFS mounted directory on the CoreOS VM.
+On the container, this directory is available at <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code>.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">exit</span></code> to finish an interactive session.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To exit a non-interactive container or a non-responsive interactive
+container, press Ctrl+] three times quickly.</p>
+</div>
+<p>To delete a container image entirely use <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">image</span> <span class="pre">rm</span></code>. This will mean that
+new instances of the container cannot be started until the container is
+reinstalled in rkt.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt image rm dev-rktmachine
+successfully removed aci for image: &quot;sha512-e1e9e1991658e3908f817164f01292ecaf44bed95e25167020c6cbe28d6b863b&quot;
+rm: 1 image(s) successfully removed
+</pre></div>
+</div>
+<p>The images can be garbage collected similarly to the running containers but
+using the rkt image gc command instead.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo rkt image gc
+</pre></div>
+</div>
+<div class="section" id="building-containers-for-rkt">
+<h2>Building Containers for rkt<a class="headerlink" href="#building-containers-for-rkt" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://github.com/projectatomic/buildah">buildah</a> tool from Project Atomic is the recommended software for creating
+OCI format container images. The <a class="reference external" href="https://github.com/projectatomic/buildah/tree/master/docs">buildah documentation</a> contains detailed
+information on using the tool. In particular, see the <a class="reference external" href="https://github.com/projectatomic/buildah/blob/master/docs/tutorials/tutorials.md">buildah tutorials</a>.</p>
+<p>The <a class="reference external" href="https://github.com/woofwoofinc/containers">Woof Woof, Inc. containers repository</a> contains build script examples
+illustrating how to use buildah to make a variety of containers for development
+use.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Most services do not default to listening to all network interfaces. Instead
+they typically just listen on the localhost network. This is a problem when
+specifying a service to run inside a container because the localhost network
+in the container will not be available outside of the container. This means
+we cannot access the container service from our host computer.</p>
+<p class="last">Most services have command line options to change the network interface on
+which the service listens. Usually, it is sufficient to change this to be
+the 0.0.0.0 interface, i.e. listen on all network interfaces on the
+container. This will then include the external network interface which our
+host computer will use to attempt to connect to the container.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

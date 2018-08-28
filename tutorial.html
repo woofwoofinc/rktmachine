@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorial &#8212; RktMachine</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/woofwoofinc.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Working with rkt" href="rkt.html" />
+    <link rel="prev" title="Using RktMachine" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          RktMachine</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.3</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-rktmachine">Installing RktMachine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starting-the-rktmachine-coreos-vm">Starting the RktMachine CoreOS VM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-a-rkt-container">Building a rkt Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-and-running-rkt-containers">Installing and Running rkt Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-rkt-containers-interactively">Running rkt Containers Interactively</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rkt.html">Working with rkt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rkt.html#building-containers-for-rkt">Building Containers for rkt</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#coreos-vm-does-not-boot">CoreOS VM Does Not Boot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-unavailable">NFS Mount Unavailable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#nfs-mount-not-writable">NFS Mount Not Writable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#reclaiming-vm-root-disk-image-space">Reclaiming VM Root Disk Image Space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-coreos">Why CoreOS?</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Development Tools Container</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#building">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="building.html#xcode">XCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-root-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">root.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-tools-qcow2">Rebuilding <code class="docutils literal notranslate"><span class="pre">tools.qcow2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#rebuilding-macos-corectl-binaries">Rebuilding macOS Corectl Binaries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releasing.html">Releasing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#release-checklist">Release Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#building-a-release-dmg">Building a Release DMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#preparing-the-github-release">Preparing the GitHub Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releasing.html#publishing-the-documentation">Publishing the Documentation</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conduct.html">Contributor Covenant Code of Conduct</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-pledge">Our Pledge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-standards">Our Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#our-responsibilities">Our Responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#enforcement">Enforcement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conduct.html#attribution">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: Using RktMachine"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Using RktMachine</span>
+    </a>
+  </li>
+  <li>
+    <a href="rkt.html" title="Next Chapter: Working with rkt"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Working with rkt &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">RktMachine needs macOS Yosemite or later to run. This is because Yosemite
+was the first version of macOS with the <a class="reference external" href="https://developer.apple.com/reference/hypervisor">native Hypervisor Framework</a> for
+running VMs.</p>
+</div>
+<div class="section" id="installing-rktmachine">
+<h2>Installing RktMachine<a class="headerlink" href="#installing-rktmachine" title="Permalink to this headline">¶</a></h2>
+<p>Begin by downloading the latest version of RktMachine from the
+<a class="reference external" href="https://github.com/woofwoofinc/rktmachine/releases">RktMachine releases</a> page on GitHub.</p>
+<p>RktMachine sometimes needs to use superuser permissions during operation and
+contains other privilege escalation points. For this reason, it is important
+to verify that the RktMachine download corresponds with the SHA256 checksum
+provided on the RktMachine releases page.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shasum</span> <span class="o">-</span><span class="n">a</span> <span class="mi">256</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">downloaded</span><span class="o">/</span><span class="n">RktMachine</span><span class="o">.</span><span class="n">dmg</span>
+</pre></div>
+</div>
+<p>When you are happy that you have an authentic <code class="docutils literal notranslate"><span class="pre">RktMachine.dmg</span></code>, go ahead
+and open it.</p>
+<img alt="_images/screenshot_dmg.png" src="_images/screenshot_dmg.png" />
+<p>It is also insecure to run applications directly from a disk archive so copy
+RktMachine to your <code class="docutils literal notranslate"><span class="pre">Applications</span></code> folder using the provided shortcut.</p>
+</div>
+<div class="section" id="starting-the-rktmachine-coreos-vm">
+<h2>Starting the RktMachine CoreOS VM<a class="headerlink" href="#starting-the-rktmachine-coreos-vm" title="Permalink to this headline">¶</a></h2>
+<p>Open RktMachine from your <code class="docutils literal notranslate"><span class="pre">Applications</span></code> folder. On start, RktMachine will
+notify you that it will ask for your user password. This is needed to start the
+<a class="reference external" href="https://github.com/TheNewNormal/corectl">Corectl</a> daemon service as the superuser.</p>
+<img alt="_images/screenshot_password_alert.png" src="_images/screenshot_password_alert.png" />
+<p>The password dialogue may look like the following if you have Touch ID
+available.</p>
+<img alt="_images/screenshot_touch_id_prompt.png" src="_images/screenshot_touch_id_prompt.png" />
+<p>Or like the following for password entry.</p>
+<img alt="_images/screenshot_password_prompt.png" src="_images/screenshot_password_prompt.png" />
+<p>Corectl, which stands for CoreOS Control, is the service used by RktMachine to
+create and manage a VM on the macOS hypervisor. Corectl installs <a class="reference external" href="https://coreos.com">CoreOS</a> Linux
+on the VM, a distribution usually deployed on cloud infrastructure. This
+distribution is also well suited for running rkt containers and managing network
+bridging for the RktMachine environment.</p>
+<p>After the application has started, a new menu bar icon will appear in the shape
+of a dog silhouette. This is the RktMachine control menu where VMs may be
+started and stopped. There are also options for connecting to a running VM
+using SSH, for resetting the current VM to a completely clean state, and for
+checking for updates to the RktMachine app.</p>
+<p>RktMachine will automatically start a VM when it is opened. This will cause a
+terminal window to open showing progress.</p>
+<p>If this is the first time RktMachine is run then it will first download the
+latest CoreOS image.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">______</span> <span class="n">__</span>    <span class="n">__</span>   <span class="n">_______</span>            <span class="n">__</span>    <span class="n">__</span>
+<span class="o">|</span>   <span class="n">__</span> <span class="o">|</span>  <span class="o">|--|</span>  <span class="o">|</span><span class="n">_</span><span class="o">|</span>   <span class="o">|</span>   <span class="o">.---.-.----|</span>  <span class="o">|--|</span><span class="n">__</span><span class="o">.-----.-----.</span>
+<span class="o">|</span>      <span class="o">|</span>    <span class="o">&lt;|</span>   <span class="n">_</span><span class="o">|</span>       <span class="o">|</span>  <span class="n">_</span>  <span class="o">|</span>  <span class="n">__</span><span class="o">|</span>     <span class="o">|</span>  <span class="o">|</span>     <span class="o">|</span>  <span class="o">-</span><span class="n">__</span><span class="o">|</span>
+<span class="o">|</span><span class="n">___</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">____</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">___</span><span class="o">.</span><span class="n">_</span><span class="o">|</span><span class="n">____</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">__</span><span class="o">|</span><span class="n">_____</span><span class="o">|</span>
+
+                                            <span class="n">Woof</span> <span class="n">Woof</span><span class="p">,</span> <span class="n">Inc</span><span class="o">.</span>
+
+<span class="o">&gt;</span> <span class="n">booting</span> <span class="n">rktmachine</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">---&gt;</span> <span class="n">downloading</span> <span class="ow">and</span> <span class="n">verifying</span> <span class="n">stable</span><span class="o">/</span><span class="mf">1298.7</span><span class="o">.</span><span class="mi">0</span>
+<span class="mf">2.12</span> <span class="n">MB</span> <span class="o">/</span> <span class="mf">33.47</span> <span class="n">MB</span> <span class="p">[</span><span class="o">==&gt;------------------------------------</span><span class="p">]</span> <span class="mf">6.35</span> <span class="o">%</span> <span class="mi">47</span><span class="n">s</span>
+</pre></div>
+</div>
+<p>First the Linux kernel <code class="docutils literal notranslate"><span class="pre">coreos_production_pxe.vmlinuz</span></code> is downloaded and
+verified to be authentic. Then the main CoreOS stable image is downloaded.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---&gt;</span> <span class="n">SHA512</span> <span class="nb">hash</span> <span class="k">for</span> <span class="n">coreos_production_pxe</span><span class="o">.</span><span class="n">vmlinuz</span> <span class="n">OK</span>
+<span class="mf">54.09</span> <span class="n">MB</span> <span class="o">/</span> <span class="mf">235.47</span> <span class="n">MB</span> <span class="p">[</span><span class="o">=========&gt;---------------------------</span><span class="p">]</span> <span class="mf">22.97</span> <span class="o">%</span> <span class="mi">4</span><span class="n">m27s</span>
+</pre></div>
+</div>
+<p>Once this is complete the image is verified and the version is logged.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---&gt;</span> <span class="n">SHA512</span> <span class="nb">hash</span> <span class="k">for</span> <span class="n">coreos_production_pxe_image</span><span class="o">.</span><span class="n">cpio</span><span class="o">.</span><span class="n">gz</span> <span class="n">OK</span>
+<span class="o">---&gt;</span> <span class="n">stable</span><span class="o">/</span><span class="mf">1298.7</span><span class="o">.</span><span class="mi">0</span> <span class="n">ready</span>
+</pre></div>
+</div>
+<p>It is only necessary to download the CoreOS images once. RktMachine will
+usually start from this point and boot the last previously loaded VM
+instead.</p>
+<p>RktMachine boots the CoreOS VM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---&gt;</span> <span class="s1">&#39;rktmachine&#39;</span> <span class="n">started</span> <span class="n">successfuly</span> <span class="k">with</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">64.19</span> <span class="ow">and</span> <span class="n">PID</span> <span class="mi">17660</span>
+<span class="o">---&gt;</span> <span class="s1">&#39;rktmachine&#39;</span> <span class="n">boot</span> <span class="n">logs</span> <span class="n">can</span> <span class="n">be</span> <span class="n">found</span> <span class="n">at</span> <span class="s1">&#39;/Users/docrualaoich/.coreos/running/C16CF576-FB07-4DC9-8BF6-C022445B31A8/log&#39;</span>
+<span class="o">---&gt;</span> <span class="s1">&#39;rktmachine&#39;</span> <span class="n">console</span> <span class="n">can</span> <span class="n">be</span> <span class="n">found</span> <span class="n">at</span> <span class="s1">&#39;/Users/docrualaoich/.coreos/running/C16CF576-FB07-4DC9-8BF6-C022445B31A8/tty&#39;</span>
+</pre></div>
+</div>
+<p>Finally our VM is ready to be used.</p>
+</div>
+<div class="section" id="building-a-rkt-container">
+<h2>Building a rkt Container<a class="headerlink" href="#building-a-rkt-container" title="Permalink to this headline">¶</a></h2>
+<p>Select the SSH option from the RktMachine menu bar app. This will open a new
+terminal window and connect to the RktMachine CoreOS VM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> ______ __    __   _______            __    __
+|   __ |  |--|  |_|   |   .---.-.----|  |--|__.-----.-----.
+|      |    &lt;|   _|       |  _  |  __|     |  |     |  -__|
+|___|__|__|__|____|__|_|__|___._|____|__|__|__|__|__|_____|
+
+                                            Woof Woof, Inc.
+
+Last login: Sat Apr 22 22:59:34 UTC 2017 on ttyS0
+Container Linux by CoreOS stable (1298.7.0)
+Update Strategy: No Reboots
+core@rktmachine ~ $
+</pre></div>
+</div>
+<p>Your user home directory is mounted from your macOS to the CoreOS VM using NFS
+and available with the same <code class="docutils literal notranslate"><span class="pre">/Users/&lt;username&gt;</span></code> directory path as on your
+macOS. This is convenient for exchanging files between the CoreOS VM and the
+host macOS.</p>
+<p>(The NFS may take a couple of moments to appear after startup so don’t panic if
+it is not there immediately.)</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">For convenience add symbolic links in the home directory on the CoreOS VM
+pointing useful directories on the <code class="docutils literal notranslate"><span class="pre">/Users</span></code> mount.</p>
+</div>
+<p>For this tutorial, we will use the example of creating a container to run a
+<a class="reference external" href="http://jupyter.org">Jupyter</a> server. This is the notebooking system which was previously called
+iPython Notebook before being extended to other backends.</p>
+<p>The <a class="reference external" href="https://github.com/projectatomic/buildah">buildah</a> command line tool is one of the tools which can used to build
+containers for rkt. It comes preinstalled by RktMachine on the CoreOS VM.</p>
+<p>Start the container from scratch.</p>
+<p>(Note that superuser privileges are needed to run buildah commands.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="kn">from</span> <span class="nn">scratch</span> <span class="o">--</span><span class="n">name</span> <span class="n">jupyter</span>
+</pre></div>
+</div>
+<p>We can verify that buildah has added the container by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo buildah containers
+CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
+11596f165083     *                  scratch                          jupyter
+</pre></div>
+</div>
+<p>Note that there is no image yet, we have just created an ad hoc container so
+far. This means that the output from <code class="docutils literal notranslate"><span class="pre">buildah</span> <span class="pre">images</span></code> won’t include this new
+container.</p>
+<p>This is an empty container and does not include any content yet. To add a useful
+filesystem, first download a base image provided by Ubuntu.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">cdimage</span><span class="o">.</span><span class="n">ubuntu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">base</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="mf">18.04</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="mf">18.04</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>To get this onto the container, we mount the container using <code class="docutils literal notranslate"><span class="pre">buildah</span> <span class="pre">mount</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo buildah mount jupyter
+/var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+</pre></div>
+</div>
+<p>The output is the mount location on the host. Verify that the container is empty
+by checking the mount has no content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo ls /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+</pre></div>
+</div>
+<p>To add the content, untar the Ubuntu base image to this location. The untar has
+to be done as root for permission to write to the mount location.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo tar xzf ubuntu-base-18.04-base-amd64.tar.gz \
+  -C /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
+</pre></div>
+</div>
+<p>And verify that the container can now usefully run bash:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Then umount the container filesystem since we will execute commands on the
+container instead from now.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">umount</span> <span class="n">jupyter</span>
+</pre></div>
+</div>
+<p>This creates the basic layout of the container. The buildah command has a number
+of subcommands which can be used to add and perform operations on the base
+image. A full list of which can be seen by running <code class="docutils literal notranslate"><span class="pre">buildah</span> <span class="pre">--help</span></code>.</p>
+<p>We will be mainly interested in the <code class="docutils literal notranslate"><span class="pre">buildah</span> <span class="pre">run</span></code> subcommand. This loads the
+container in its current state and performs a command from within the
+container. We will use this to run apt and other installation instructions on
+the container itself.</p>
+<p>Start by updating the Ubuntu base installation and adding some required
+utilities, wget and bzip2. These are needed for later steps in the installation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> <span class="o">-</span><span class="n">qq</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span> <span class="o">-</span><span class="n">qq</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">qq</span> <span class="n">wget</span> <span class="n">bzip2</span>
+</pre></div>
+</div>
+<p>Next, we perform the Jupyter installation steps. Since we are interested
+mainly in the parts of this to do with creating containers, we’ll skip through
+the actual Jupyter installation quickly.</p>
+<p>(For anyone interested, Jupyter is installed by first installing the
+<a class="reference external" href="https://conda.io/miniconda.html">miniconda</a> minimal distribution of <a class="reference external" href="https://www.continuum.io">Anaconda</a>, a Python data science platform
+and then using the package manager for that to install the rest of the parts.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">repo</span><span class="o">.</span><span class="n">continuum</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">miniconda</span><span class="o">/</span><span class="n">Miniconda3</span><span class="o">-</span><span class="n">latest</span><span class="o">-</span><span class="n">Linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">bash</span> <span class="n">Miniconda3</span><span class="o">-</span><span class="n">latest</span><span class="o">-</span><span class="n">Linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">usr</span> <span class="o">-</span><span class="n">f</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">rm</span> <span class="o">-</span><span class="n">fr</span> <span class="n">Miniconda3</span><span class="o">-</span><span class="n">latest</span><span class="o">-</span><span class="n">Linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">numpy</span> <span class="n">matplotlib</span> <span class="n">pandas</span> <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span> <span class="n">jupyter</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">jupyter</span>
+</pre></div>
+</div>
+<p>To be able to use the Jupyter service from your macOS, you need to make the
+port on which it will run available. This is done by specifying the ports
+which should be accessible on the container.</p>
+<p>We will run Jupyter on port 80, so make this available.</p>
+<p>(CoreOS takes care of ensuring there is a bridge between the CoreOS VM external
+network which your macOS can reach and containers running inside the VM. This
+means that this port 80 is effectively port 80 on the CoreOS VM too.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">config</span> <span class="n">jupyter</span> <span class="o">--</span><span class="n">port</span> <span class="mi">80</span>
+</pre></div>
+</div>
+<p>Next, set a command for the container to run when it starts. We use a very
+permissive/insecure Jupyter run line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">config</span> <span class="n">jupyter</span> \
+  <span class="o">--</span><span class="n">entrypoint</span> <span class="s2">&quot;jupyter notebook --no-browser --allow-root --ip=&#39;*&#39; --port=80 --notebook-dir=/home/jupyter --NotebookApp.token=&#39;&#39;&quot;</span>
+</pre></div>
+</div>
+<p>And finally, clean as much off the container image as we can to save space.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qq</span> <span class="n">autoremove</span>
+<span class="n">sudo</span> <span class="n">buildah</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="o">--</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qq</span> <span class="n">clean</span>
+</pre></div>
+</div>
+<p>Once we are ready, we create the container image file by committing the image
+to the container storage first. The <code class="docutils literal notranslate"><span class="pre">-rm</span></code> option deletes the build container
+once the image has been created.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">commit</span> <span class="o">-</span><span class="n">rm</span> <span class="n">jupyter</span> <span class="n">jupyter</span>
+</pre></div>
+</div>
+<p>The committed image should be present in the image listing now.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo buildah images
+IMAGE ID      IMAGE NAME                        CREATED AT        SIZE
+b119130b4473  docker.io/library/jupyter:latest  Jan 2, 2018 22:31 3.79 GB
+</pre></div>
+</div>
+<p>Export the container layout into OCI format in the local directory by using
+the push subcommand.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo buildah push jupyter oci:jupyter:latest
+</pre></div>
+</div>
+<p>OCI format is a tar archive of this. We also need to create the .oci tar file
+without the directory name prefix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="n">cf</span> <span class="n">jupyter</span><span class="o">.</span><span class="n">oci</span> <span class="o">-</span><span class="n">C</span> <span class="n">jupyter</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>We finish the container build by removing the image from buildah and deleting
+the intermediate files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">buildah</span> <span class="n">rmi</span> <span class="n">jupyter</span>
+<span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">fr</span> <span class="n">jupyter</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-and-running-rkt-containers">
+<h2>Installing and Running rkt Containers<a class="headerlink" href="#installing-and-running-rkt-containers" title="Permalink to this headline">¶</a></h2>
+<p>Continuing the Jupyter server example, we have to convert the OCI image into an
+ACI before it can be used in rkt on the CoreOS VM. The docker2aci command is
+available for this task.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker2aci</span> <span class="n">jupyter</span><span class="o">.</span><span class="n">oci</span>
+<span class="n">mv</span> <span class="n">jupyter</span><span class="o">-</span><span class="n">latest</span><span class="o">.</span><span class="n">aci</span> <span class="n">jupyter</span><span class="o">.</span><span class="n">aci</span>
+</pre></div>
+</div>
+<p>Then import the container into rkt by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rkt</span> <span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">options</span><span class="o">=</span><span class="n">image</span> <span class="n">fetch</span> <span class="o">./</span><span class="n">jupyter</span><span class="o">.</span><span class="n">aci</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--insecure-options=image</span></code> flag is here because the <code class="docutils literal notranslate"><span class="pre">jupyter.aci</span></code>
+image we created earlier is unsigned. The rkt tool verifies images by
+default and will error here otherwise. We can be confident about the
+container we created but it is very unsafe to use this option with untrusted
+containers since that would allow arbitrary code to be executed on your
+system.</p>
+</div>
+<p>Since this is a large image, it will take some time for the container to be
+imported. Once done, we can see it by listing the containers available in rkt
+on the CoreOS VM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rkt image list
+ID                      NAME                                    SIZE    IMPORT TIME     LAST USED
+sha512-e1e9e1991658     jupyter                                 3.3GiB  4 minutes ago   4 minutes ago
+sha512-fdd18d9c2103     coreos.com/rkt/stage1-coreos:1.21.0     184MiB  53 minutes ago  53 minutes ago
+</pre></div>
+</div>
+<p>Now start an instance of the container using <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">run</span></code>. Note that superuser
+privileges are required for actually starting and running a container with rkt.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">rkt</span> <span class="n">run</span> <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">80</span><span class="p">:</span><span class="mi">80</span> <span class="n">jupyter</span>
+</pre></div>
+</div>
+<p>This starts the container we built in the previous section and runs the Jupyter
+start command we specified. The <code class="docutils literal notranslate"><span class="pre">--port</span></code> parameter makes the Jupyter server
+available on port 80 outside the container. This is also wired to port 80 of the
+CoreOS VM automatically.</p>
+<p>The RktMachine CoreOS VM comes installed with <a class="reference external" href="http://www.avahi.org">Avahi mDNS</a>. This is configured
+to broadcast a <code class="docutils literal notranslate"><span class="pre">rktmachine.local</span></code> DNS entry for the CoreOS VM. So you will be
+able to connect to the Jupyter server by opening <a class="reference external" href="http://rktmachine.local">rktmachine.local</a> in a
+browser window.</p>
+<p>You should see a blank Jupyter notebook system.</p>
+<img alt="_images/screenshot_jupyter.png" src="_images/screenshot_jupyter.png" />
+<p>See the section on <a class="reference internal" href="rkt.html#workingwithrkt"><span class="std std-ref">Working with rkt</span></a> for more details on using rkt.</p>
+</div>
+<div class="section" id="running-rkt-containers-interactively">
+<h2>Running rkt Containers Interactively<a class="headerlink" href="#running-rkt-containers-interactively" title="Permalink to this headline">¶</a></h2>
+<p>It is often useful to run a Bash shell on a container instead of the default
+command. And similarly it is common to mount directories from the host to the
+rkt container.</p>
+<p>For instance, suppose we wanted to run a Jupyter server which automatically
+included a set of notebooks from the host macOS. The Jupyter server can be
+configured to run with a base directory of our choice. We just need to make it
+so that this location is available to the container.</p>
+<p>For this, we use:</p>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">--interactive</span></code> option to the <code class="docutils literal notranslate"><span class="pre">rkt</span> <span class="pre">run</span></code> to specify that we want to be
+able to type commands to the container.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">--exec</span> <span class="pre">/bin/bash</span></code> option to override the default command line in the
+container and run Bash instead. This gives us an interactive shell on the
+container instead of the default Jupyter server.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--volume</span> <span class="pre">rktmachine,kind=host,source=/Users/&lt;username&gt;/path/to/notebooks</span></code>
+defines a storage named <code class="docutils literal notranslate"><span class="pre">rktmachine</span></code> which we can mount to the container.
+It will be linked to the directory given in the source attribute.</li>
+<li>Finally, we use <code class="docutils literal notranslate"><span class="pre">--mount</span> <span class="pre">volume=rktmachine,target=/rktmachine</span></code> to add this
+storage inside the container under the path <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code>.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">rkt</span> <span class="n">run</span> \
+    <span class="o">--</span><span class="n">interactive</span> \
+    <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">80</span><span class="p">:</span><span class="mi">80</span> \
+    <span class="o">--</span><span class="n">volume</span> <span class="n">rktmachine</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="n">host</span><span class="p">,</span><span class="n">source</span><span class="o">=/</span><span class="n">Users</span><span class="o">/</span><span class="n">docrualaoich</span><span class="o">/</span><span class="n">notebooks</span><span class="o">/</span> \
+    <span class="n">jupyter</span> \
+    <span class="o">--</span><span class="n">mount</span> <span class="n">volume</span><span class="o">=</span><span class="n">rktmachine</span><span class="p">,</span><span class="n">target</span><span class="o">=/</span><span class="n">rktmachine</span> \
+    <span class="o">--</span><span class="n">exec</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span>
+</pre></div>
+</div>
+<p>Alternatively, it is often easier to just change to the desired directory first
+and use <code class="docutils literal notranslate"><span class="pre">$(pwd)</span></code> as the volume source.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo rkt run \
+    --interactive \
+    --port=80:80 \
+    --volume rktmachine,kind=host,source=$(pwd) \
+    jupyter \
+    --mount volume=rktmachine,target=/rktmachine \
+    --exec /bin/bash
+</pre></div>
+</div>
+<p>Once on the container, change to <code class="docutils literal notranslate"><span class="pre">/rktmachine</span></code> to see the notebooks and start
+Jupyter from that directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">rktmachine</span>
+<span class="n">jupyter</span> <span class="n">notebook</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">browser</span> <span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">root</span> <span class="o">--</span><span class="n">ip</span><span class="o">=</span><span class="s1">&#39;*&#39;</span> <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">80</span> \
+    <span class="o">--</span><span class="n">notebook</span><span class="o">-</span><span class="nb">dir</span><span class="o">=/</span><span class="n">rktmachine</span> <span class="o">--</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">token</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+<p>If you open <a class="reference external" href="http://rktmachine.local">rktmachine.local</a> now, you will see a Jupyter server with the
+notebooks already available.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
