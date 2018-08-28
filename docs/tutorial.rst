@@ -184,7 +184,7 @@ filesystem, first download a base image provided by Ubuntu.
 
 ::
 
-    wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.10/release/ubuntu-base-17.10-base-amd64.tar.gz
+    wget http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04-base-amd64.tar.gz
 
 To get this onto the container, we mount the container using ``buildah mount``:
 
@@ -205,7 +205,7 @@ to be done as root for permission to write to the mount location.
 
 ::
 
-    $ sudo tar xzf ubuntu-base-17.10-base-amd64.tar.gz \
+    $ sudo tar xzf ubuntu-base-18.04-base-amd64.tar.gz \
       -C /var/lib/containers/storage/devicemapper/mnt/088dc2059ad551206611cc519f1ea11428862f7f4f5842b9049edc785d91a646/rootfs
 
 And verify that the container can now usefully run bash:

@@ -25,10 +25,10 @@ buildah from scratch --name $IMAGE
 # Base Image
 ################################################################################
 
-wget http://cdimage.ubuntu.com/ubuntu-base/releases/17.10/release/ubuntu-base-17.10-base-amd64.tar.gz
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04-base-amd64.tar.gz
 
 MOUNT=$(buildah mount $IMAGE)
-tar xzf ubuntu-base-17.10-base-amd64.tar.gz -C "$MOUNT"
+tar xzf ubuntu-base-18.04-base-amd64.tar.gz -C "$MOUNT"
 buildah umount $IMAGE
 
 
