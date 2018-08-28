@@ -55,7 +55,7 @@ buildah run $IMAGE -- apt-get update -qq
 
 buildah run $IMAGE -- apt-get install -qq python2.7
 buildah run $IMAGE -- apt-get install -qq python-pip
-buildah run $IMAGE -- pip install -q --upgrade pip
+buildah run $IMAGE -- pip install -q --upgrade pip==9.0.3
 
 buildah run $IMAGE -- pip install -q Sphinx
 buildah run $IMAGE -- pip install -q sphinx_bootstrap_theme
