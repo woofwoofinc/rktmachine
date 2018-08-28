@@ -6,8 +6,8 @@ project = u'RktMachine'
 copyright = u'2017, Woof Woof, Inc.'
 author = u'Woof Woof, Inc.'
 
-version = '1.0.2'
-release = '1.0.2'
+version = '1.0.3'
+release = '1.0.3'
 
 templates_path = ['_templates']
 exclude_patterns = ['_build']
